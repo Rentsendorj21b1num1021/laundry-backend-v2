@@ -25,7 +25,24 @@ export const createCustomer = async (req, res) => {
   }
 };
 
-// 2️⃣ Борлуулалт үүсгэх + 5% бонус
+export const getAllCustomers = async (req, res) => {
+  try {
+    const { phone } = req.query; // query parameter-аас авна
+    let filter = {};
+
+    if (phone) {
+      // phone утга өгөгдсөн тэмдэгтээр эхэлж байгаа бүх дугаарыг хайна
+      filter.phone = { $regex: `^${phone}` }; 
+    }
+
+    const customers = await Customer.find(filter).sort({ createdAt: -1 });
+    res.status(200).json({ message: "Хэрэглэгчид ирлээ", customers });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
 export const createSale = async (req, res) => {
   try {
     const { customerId, totalAmount } = req.body;

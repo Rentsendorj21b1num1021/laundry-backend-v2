@@ -1,12 +1,12 @@
 import express from "express";
-import { createCustomer, createSale } from "../controllers/customerController.js";
+import { createCustomer, createSale, getAllCustomers} from "../controllers/customerController.js";
 import { auth } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
 // Customer бүртгэх (employer token шаардлагатай)
 router.post("/customer", auth, createCustomer);
-
+router.get("/customer-list", auth, getAllCustomers);
 // Борлуулалт үүсгэх (bonus update)
 router.post("/sale", auth, createSale);
 
