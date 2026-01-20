@@ -2,14 +2,17 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// REGISTER
 export const register = async (req, res) => {
   try {
-    const { username, password, phone } = req.body;
+    const { username, password, phone, email } = req.body;
 
-    // Check if user exists
-    const existingUser = await User.findOne({ username });
+    // Check if user exists by username, phone or email
+    const existingUser = await User.findOne({ 
+      $or: [{ username }, { phone }, { email }] 
+    });
     if (existingUser) {
-      return res.status(400).json({ message: "Username давхцаж байна" });
+      return res.status(400).json({ message: "Username, phone эсвэл email давхцаж байна" });
     }
 
     // Hash password
@@ -20,6 +23,7 @@ export const register = async (req, res) => {
       username,
       passwordHash,
       phone,
+      email,
     });
 
     res.status(201).json({
@@ -31,13 +35,20 @@ export const register = async (req, res) => {
   }
 };
 
+// LOGIN
 export const login = async (req, res) => {
   try {
-    const { username, password } = req.body;
+    const { identifier, password } = req.body;
 
-    // Find user
-    const user = await User.findOne({ username });
-    if (!user) return res.status(400).json({ message: "Username буруу" });
+    // Find user by username, phone or email
+    const user = await User.findOne({ 
+      $or: [
+        { username: identifier }, 
+        { phone: identifier }, 
+        { email: identifier }
+      ]
+    });
+    if (!user) return res.status(400).json({ message: "Хэрэглэгч олдсонгүй" });
 
     // Compare password
     const isMatch = await bcrypt.compare(password, user.passwordHash);

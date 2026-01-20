@@ -1,5 +1,6 @@
 import Customer from "../models/customer.js";
 import Sale from "../models/Sale.js";
+import Order from "../models/order.js";
 
 // 1️⃣ Customer бүртгэх
 export const createCustomer = async (req, res) => {
@@ -42,6 +43,29 @@ export const getAllCustomers = async (req, res) => {
   }
 };
 
+export const getCustomerByPhone = async (req, res) => {
+  try {
+    const { phone } = req.query;
+
+    if (!phone) {
+      return res.status(400).json({ message: "Утасны дугаар шаардлагатай" });
+    }
+
+    const customer = await Customer.findOne({ phone });
+
+    if (!customer) {
+      return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
+    }
+
+    res.status(200).json({
+      message: "Хэрэглэгчийн мэдээлэл",
+      customer,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
 
 export const createSale = async (req, res) => {
   try {
@@ -66,6 +90,68 @@ export const createSale = async (req, res) => {
       message: "Борлуулалт үүссэн, бонус нэмэгдлээ",
       sale,
       updatedCustomer: customer,
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+export const createOrder = async (req, res) => {
+  try {
+    const { customerId, items, usedBonus = 0 } = req.body;
+    const employeeId = req.user.id;
+
+    // 1️⃣ Items шалгах
+    if (!items || items.length === 0) {
+      return res.status(400).json({ message: "Items хоосон байна" });
+    }
+
+    // 2️⃣ Items total
+    const itemsTotal = items.reduce((sum, i) => sum + i.price, 0);
+
+    let customer = null;
+    let earnedBonus = 0;
+    let finalTotal = itemsTotal;
+
+    // 3️⃣ Хэрвээ customer байгаа бол
+    if (customerId) {
+      customer = await Customer.findById(customerId);
+      if (!customer)
+        return res.status(404).json({ message: "Customer олдсонгүй" });
+
+      // Bonus ашигласан эсэх
+      if (usedBonus > 0) {
+        if (usedBonus > customer.total_bonus) {
+          return res.status(400).json({ message: "Bonus хүрэлцэхгүй" });
+        }
+        finalTotal -= usedBonus;
+      }
+
+      // 4️⃣ 5% бонус бодох
+      earnedBonus = finalTotal * 0.05;
+    }
+
+    // 5️⃣ Order үүсгэх
+    const order = await Order.create({
+      customer_id: customerId || null,
+      employee_id: employeeId,
+      items,
+      total_price: finalTotal,
+      used_bonus: usedBonus,
+      earned_bonus: earnedBonus,
+    });
+
+    // 6️⃣ Customer bonus update (хэрвээ байгаа бол)
+    if (customer) {
+      customer.total_bonus =
+        customer.total_bonus - usedBonus + earnedBonus;
+      await customer.save();
+    }
+
+    res.status(201).json({
+      message: "Order амжилттай бүртгэгдлээ",
+      order,
+      updatedCustomer: customer || null,
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
