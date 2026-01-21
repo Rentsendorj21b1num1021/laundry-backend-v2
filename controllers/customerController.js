@@ -11,7 +11,9 @@ export const createCustomer = async (req, res) => {
     // Хэрэглэгч аль хэдийн бүртгэлтэй эсэх
     const existingCustomer = await Customer.findOne({ phone });
     if (existingCustomer)
-      return res.status(400).json({ message: "Хэрэглэгч аль хэдийн бүртгэлтэй" });
+      return res
+        .status(400)
+        .json({ message: "Хэрэглэгч аль хэдийн бүртгэлтэй" });
 
     // Customer үүсгэх
     const customer = await Customer.create({
@@ -33,7 +35,7 @@ export const getAllCustomers = async (req, res) => {
 
     if (phone) {
       // phone утга өгөгдсөн тэмдэгтээр эхэлж байгаа бүх дугаарыг хайна
-      filter.phone = { $regex: `^${phone}` }; 
+      filter.phone = { $regex: `^${phone}` };
     }
 
     const customers = await Customer.find(filter).sort({ createdAt: -1 });
@@ -66,11 +68,10 @@ export const getCustomerByPhone = async (req, res) => {
   }
 };
 
-
 export const createSale = async (req, res) => {
   try {
     const { customerId, totalAmount } = req.body;
-    const employeeId = req.user.id; // JWT-аас авнаb  
+    const employeeId = req.user.id; // JWT-аас авнаb
     // Bonus тооцоолох
     const bonusAmount = totalAmount * 0.05;
     // Борлуулалт үүсгэх
@@ -105,9 +106,13 @@ export const createOrder = async (req, res) => {
     if (!items || items.length === 0) {
       return res.status(400).json({ message: "Items хоосон байна" });
     }
+    const toTwoDecimal = (value) => {
+      return Number(value.toFixed(2));
+    };
 
     // 2️⃣ Items total
-    const itemsTotal = items.reduce((sum, i) => sum + i.price, 0);
+
+    const itemsTotal = toTwoDecimal(items.reduce((sum, i) => sum + i.price, 0));
 
     let customer = null;
     let earnedBonus = 0;
@@ -126,7 +131,7 @@ export const createOrder = async (req, res) => {
         }
         finalTotal -= usedBonus;
       }
-
+      finalTotal = finalTotal;
       // 4️⃣ 5% бонус бодох
       earnedBonus = finalTotal * 0.05;
     }
@@ -136,15 +141,16 @@ export const createOrder = async (req, res) => {
       customer_id: customerId || null,
       employee_id: employeeId,
       items,
-      total_price: finalTotal,
-      used_bonus: usedBonus,
-      earned_bonus: earnedBonus,
+      total_price: toTwoDecimal(finalTotal),
+      used_bonus: toTwoDecimal(usedBonus),
+      earned_bonus: toTwoDecimal(earnedBonus),
     });
 
     // 6️⃣ Customer bonus update (хэрвээ байгаа бол)
     if (customer) {
-      customer.total_bonus =
-        customer.total_bonus - usedBonus + earnedBonus;
+      customer.total_bonus = toTwoDecimal(
+        customer.total_bonus - usedBonus + earnedBonus,
+      );
       await customer.save();
     }
 
