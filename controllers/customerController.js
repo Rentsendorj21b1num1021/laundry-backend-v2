@@ -163,3 +163,215 @@ export const createOrder = async (req, res) => {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
+
+
+
+
+export const getMonthlyIncomeChart = async (req, res) => {
+  try {
+    const start = new Date();
+    start.setMonth(start.getMonth() - 11);
+    start.setDate(1);
+    start.setHours(0, 0, 0, 0);
+
+    const result = await Order.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: start },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$createdAt" },
+            month: { $month: "$createdAt" },
+          },
+          totalIncome: { $sum: "$total_price" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+
+    // 12 сарын array бэлдэх
+    const months = [];
+    for (let i = 0; i < 12; i++) {
+      const d = new Date();
+      d.setMonth(d.getMonth() - (11 - i));
+      months.push({
+        year: d.getFullYear(),
+        month: d.getMonth() + 1,
+        label: `${d.getMonth() + 1} сар`,
+        total: 0,
+      });
+    }
+
+    result.forEach((r) => {
+      const index = months.findIndex(
+        (m) => m.year === r._id.year && m.month === r._id.month
+      );
+      if (index !== -1) months[index].total = r.totalIncome;
+    });
+
+    res.json(months);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getLast7DaysIncome = async (req, res) => {
+  try {
+    const today = new Date();
+    today.setHours(23, 59, 59, 999);
+
+    const start = new Date();
+    start.setDate(start.getDate() - 6);
+    start.setHours(0, 0, 0, 0);
+
+    const result = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: start,
+            $lte: today,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            day: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
+              },
+            },
+          },
+          totalIncome: { $sum: "$total_price" },
+        },
+      },
+      { $sort: { "_id.day": 1 } },
+    ]);
+
+    // 7 хоногийн массив
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(d.getDate() - i);
+      const key = d.toISOString().slice(0, 10);
+      days.push({
+        label: d.toLocaleDateString("mn-MN", {
+          month: "2-digit",
+          day: "2-digit",
+        }),
+        key,
+        total: 0,
+      });
+    }
+
+    result.forEach((r) => {
+      const day = days.find((d) => d.key === r._id.day);
+      if (day) day.total = r.totalIncome;
+    });
+
+    res.json(days);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getIncomeByDateRange = async (req, res) => {
+  try {
+    const { from, to } = req.query;
+
+    if (!from || !to) {
+      return res.status(400).json({ message: "from болон to date шаардлагатай" });
+    }
+
+    const start = new Date(from);
+    start.setHours(0, 0, 0, 0);
+
+    const end = new Date(to);
+    end.setHours(23, 59, 59, 999);
+
+    const result = await Order.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: start,
+            $lte: end,
+          },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            day: {
+              $dateToString: {
+                format: "%Y-%m-%d",
+                date: "$createdAt",
+              },
+            },
+          },
+          totalIncome: { $sum: "$total_price" },
+        },
+      },
+      { $sort: { "_id.day": 1 } },
+    ]);
+
+    // Range-ийн бүх өдрийг бэлдэх
+    const days = [];
+    const cursor = new Date(start);
+
+    while (cursor <= end) {
+      const key = cursor.toISOString().slice(0, 10);
+      days.push({
+        key,
+        label: cursor.toLocaleDateString("mn-MN", {
+          month: "2-digit",
+          day: "2-digit",
+        }),
+        total: 0,
+      });
+      cursor.setDate(cursor.getDate() + 1);
+    }
+
+    result.forEach((r) => {
+      const day = days.find((d) => d.key === r._id.day);
+      if (day) day.total = r.totalIncome;
+    });
+
+    res.json(days);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+
+export const getCustomerOrderHistory = async (req, res) => {
+  try {
+    const { customerId } = req.params;
+
+    if (!customerId) {
+      return res.status(400).json({ message: "customerId шаардлагатай" });
+    }
+
+    const orders = await Order.find({
+      customer_id: customerId,
+      status: "PAID",
+    })
+      .sort({ createdAt: -1 })
+      .populate("employee_id", "username name")
+      .select("items total_price used_bonus earned_bonus createdAt");
+
+    res.json({
+      customerId,
+      totalOrders: orders.length,
+      orders,
+    });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
