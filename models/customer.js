@@ -4,7 +4,7 @@ const customerSchema = new mongoose.Schema(
   {
     phone: { type: String, required: true, unique: true },
     name: { type: String, default: null },   
-    total_bonus: { type: Number, default: 0 }, 
+    total_bonus: { type: Number, default: 5000 }, 
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "Employee" }, 
   },
   { timestamps: true }
