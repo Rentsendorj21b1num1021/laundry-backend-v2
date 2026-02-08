@@ -164,10 +164,6 @@ export const createOrder = async (req, res) => {
   }
 };
 
-
-
-
-
 export const getMonthlyIncomeChart = async (req, res) => {
   try {
     const start = new Date();
@@ -208,7 +204,7 @@ export const getMonthlyIncomeChart = async (req, res) => {
 
     result.forEach((r) => {
       const index = months.findIndex(
-        (m) => m.year === r._id.year && m.month === r._id.month
+        (m) => m.year === r._id.year && m.month === r._id.month,
       );
       if (index !== -1) months[index].total = r.totalIncome;
     });
@@ -218,7 +214,6 @@ export const getMonthlyIncomeChart = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
-
 
 export const getLast7DaysIncome = async (req, res) => {
   try {
@@ -281,13 +276,14 @@ export const getLast7DaysIncome = async (req, res) => {
   }
 };
 
-
 export const getIncomeByDateRange = async (req, res) => {
   try {
     const { from, to } = req.query;
 
     if (!from || !to) {
-      return res.status(400).json({ message: "from болон to date шаардлагатай" });
+      return res
+        .status(400)
+        .json({ message: "from болон to date шаардлагатай" });
     }
 
     const start = new Date(from);
@@ -349,7 +345,6 @@ export const getIncomeByDateRange = async (req, res) => {
   }
 };
 
-
 export const getCustomerOrderHistory = async (req, res) => {
   try {
     const { customerId } = req.params;
@@ -371,6 +366,47 @@ export const getCustomerOrderHistory = async (req, res) => {
       totalOrders: orders.length,
       orders,
     });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const getOrderList = async (req, res) => {
+  try {
+    const { status, customer_id, employee_id, minPrice, maxPrice } = req.query;
+    const filter = {};
+
+    if (status) filter.status = status;
+    if (customer_id) filter.customer_id = customer_id;
+    if (employee_id) filter.employee_id = employee_id;
+
+    if (minPrice || maxPrice) {
+      filter.total_price = {};
+      if (minPrice) filter.total_price.$gte = Number(minPrice);
+      if (maxPrice) filter.total_price.$lte = Number(maxPrice);
+    }
+
+    const orders = await Order.find(filter)
+      .populate("customer_id", "name email")
+      .populate("employee_id", "name email")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(orders);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
+
+export const deleteOrder = async (req, res) => {
+  try {
+    const { orderId } = req.body;
+
+    if (!orderId) {
+      return res.status(400).json({ message: "orderId шаардлагатай" });
+    }
+
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ message: "Захиалга амжилттай устгагдлаа" });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
