@@ -11,6 +11,7 @@ import {
   getCustomerOrderHistory,
   getOrderList,
   deleteOrder,
+  updateCustomer,
 } from "../controllers/customerController.js";
 import { auth } from "../middleware/authMiddleware.js";
 
@@ -26,10 +27,11 @@ router.get("/customer/by-phone", auth, getCustomerByPhone);
 router.post("/order", auth, createOrder);
 router.get("/getOrders", auth, getOrderList);
 router.post("/deleteOrder", auth, deleteOrder);
+router.get("/customers/:customerId/orders", auth, getCustomerOrderHistory);
+router.post("/updateCustomer", auth, updateCustomer);
 
 router.get("/income/chart/monthly", auth, getMonthlyIncomeChart);
 router.get("/income/chart/last-7-days", auth, getLast7DaysIncome);
 router.get("/income/chart/range", auth, getIncomeByDateRange);
-router.get("/customers/:customerId/orders", auth, getCustomerOrderHistory);
 
 export default router;

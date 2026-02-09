@@ -411,3 +411,27 @@ export const deleteOrder = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+export const updateCustomer = async (req, res) => {
+  try {
+    const { customerId, ...updateData } = req.body;
+
+    if (!customerId) {
+      return res.status(400).json({ message: "customerId шаардлагатай" });
+    }
+
+    const updatedCustomer = await Customer.findByIdAndUpdate(
+      customerId,
+      updateData,
+      { new: true },
+    );
+
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
+    }
+
+    res.json(updatedCustomer);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+};
