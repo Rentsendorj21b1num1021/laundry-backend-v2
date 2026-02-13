@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const ItemSchema = new mongoose.Schema({
   id: { type: String, required: true },
@@ -21,4 +21,4 @@ const MenuSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-module.exports = mongoose.model("Menu", MenuSchema);
+export default mongoose.model("Menu", MenuSchema);

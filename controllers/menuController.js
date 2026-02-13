@@ -1,7 +1,7 @@
-const Menu = require("../models/Menu");
+import Menu from "../models/Menu.js";
 
 // ➕ Menu нэмэх (1 JSON = 1 document)
-async function createMenu(req, res) {
+export async function createMenu(req, res) {
   try {
     const menu = new Menu(req.body);
     await menu.save();
@@ -12,7 +12,7 @@ async function createMenu(req, res) {
 }
 
 // 📥 Бүх menu авах
-async function getMenus(req, res) {
+export async function getMenus(req, res) {
   try {
     const menus = await Menu.find();
     res.json(menus);
@@ -22,7 +22,7 @@ async function getMenus(req, res) {
 }
 
 // 📥 Service нэрээр menu авах
-async function getMenuByService(req, res) {
+export async function getMenuByService(req, res) {
   try {
     const menu = await Menu.findOne({ service: req.params.service });
     if (!menu) {
@@ -33,9 +33,3 @@ async function getMenuByService(req, res) {
     res.status(500).json({ error: err.message });
   }
 }
-
-module.exports = {
-  createMenu,
-  getMenus,
-  getMenuByService,
-};
