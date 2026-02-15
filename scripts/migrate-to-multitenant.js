@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import Organization from "../models/Organization.js";
-import Customer from "../models/Customer.js";
-import Order from "../models/Order.js";
-import Menu from "../models/Menu.js";
-import User from "../models/User.js";
+import Organization from "../models/organization.js";
+import Customer from "../models/customer.js";
+import Order from "../models/order.js";
+import Menu from "../models/menu.js";
+import User from "../models/user.js";
 
 dotenv.config();
 
