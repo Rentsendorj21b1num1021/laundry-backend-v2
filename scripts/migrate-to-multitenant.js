@@ -4,7 +4,7 @@ import Organization from "../models/organization.js";
 import Customer from "../models/customer.js";
 import Order from "../models/order.js";
 import Menu from "../models/menu.js";
-import User from "../models/user.js";
+import User from "../models/User.js";
 
 dotenv.config();
 

@@ -1,5 +1,5 @@
 import Organization from "../models/organization.js";
-import User from "../models/user.js";
+import User from "../models/User.js";
 
 // Байгууллага үүсгэх
 export const createOrganization = async (req, res) => {
