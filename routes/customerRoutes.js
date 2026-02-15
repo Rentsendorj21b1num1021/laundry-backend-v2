@@ -1,7 +1,6 @@
 import express from "express";
 import {
   createCustomer,
-  createSale,
   getAllCustomers,
   getCustomerByPhone,
   createOrder,
@@ -12,26 +11,60 @@ import {
   getOrderList,
   deleteOrder,
   updateCustomer,
+  getStatistics,
 } from "../controllers/customerController.js";
-import { auth } from "../middleware/authMiddleware.js";
+import {
+  auth,
+  requireOrganization,
+  requireOrgRole,
+} from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-// Customer бүртгэх (employer token шаардлагатай)
-router.post("/customer", auth, createCustomer);
-router.get("/customer-list", auth, getAllCustomers);
-// Борлуулалт үүсгэх (bonus update)
-router.post("/sale", auth, createSale);
-router.get("/customer/by-phone", auth, getCustomerByPhone);
+// *** БҮХ route-д auth + requireOrganization ***
 
-router.post("/order", auth, createOrder);
-router.get("/getOrders", auth, getOrderList);
-router.post("/deleteOrder", auth, deleteOrder);
-router.get("/customers/:customerId/orders", auth, getCustomerOrderHistory);
-router.post("/updateCustomer", auth, updateCustomer);
+// Customer CRUD
+router.post("/customer", auth, requireOrganization, createCustomer);
+router.get("/customer-list", auth, requireOrganization, getAllCustomers);
+router.get("/customer/by-phone", auth, requireOrganization, getCustomerByPhone);
+router.post("/updateCustomer", auth, requireOrganization, updateCustomer);
 
-router.get("/income/chart/monthly", auth, getMonthlyIncomeChart);
-router.get("/income/chart/last-7-days", auth, getLast7DaysIncome);
-router.get("/income/chart/range", auth, getIncomeByDateRange);
+// Order CRUD
+router.post("/order", auth, requireOrganization, createOrder);
+router.get("/getOrders", auth, requireOrganization, getOrderList);
+router.post(
+  "/deleteOrder",
+  auth,
+  requireOrganization,
+  requireOrgRole("manager", "owner"),
+  deleteOrder,
+);
+router.get(
+  "/customers/:customerId/orders",
+  auth,
+  requireOrganization,
+  getCustomerOrderHistory,
+);
+
+// Statistics & Charts
+router.get("/statistics", auth, requireOrganization, getStatistics);
+router.get(
+  "/income/chart/monthly",
+  auth,
+  requireOrganization,
+  getMonthlyIncomeChart,
+);
+router.get(
+  "/income/chart/last-7-days",
+  auth,
+  requireOrganization,
+  getLast7DaysIncome,
+);
+router.get(
+  "/income/chart/range",
+  auth,
+  requireOrganization,
+  getIncomeByDateRange,
+);
 
 export default router;
