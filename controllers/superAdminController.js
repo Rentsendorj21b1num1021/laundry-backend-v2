@@ -1,8 +1,8 @@
-import Organization from "../models/Organization.js";
-import User from "../models/User.js";
-import Customer from "../models/Customer.js";
-import Order from "../models/Order.js";
-import Menu from "../models/Menu.js";
+import Organization from "../models/organization.js";
+import User from "../models/user.js";
+import Customer from "../models/customer.js";
+import Order from "../models/order.js";
+import Menu from "../models/menu.js";
 
 // ========================================
 // БАЙГУУЛЛАГА УДИРДЛАГА

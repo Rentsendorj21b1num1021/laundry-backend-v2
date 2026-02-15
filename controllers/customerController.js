@@ -1,5 +1,5 @@
 import Customer from "../models/customer.js";
-import Order from "../models/Order.js";
+import Order from "../models/order.js";
 import mongoose from "mongoose";
 
 // 1️⃣ Customer бүртгэх

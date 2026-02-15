@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
-import Organization from "../models/Organization.js";
+import User from "../models/user.js";
+import Organization from "../models/organization.js";
 
 // 1️⃣ Зөвхөн нэвтрэлт шалгах
 export const auth = async (req, res, next) => {
