@@ -7,9 +7,10 @@ import customerRoutes from "./routes/customerRoutes.js";
 import menuRoutes from "./routes/menuRoutes.js";
 import organizationRoutes from "./routes/organizationRoutes.js";
 import superAdminRoutes from "./routes/superAdminRoutes.js"; // *** ШИНЭ ***
+import dns from 'node:dns';
+dns.setServers(['8.8.8.8', '1.1.1.1']);
 
 dotenv.config();
-
 const app = express();
 
 app.use(cors({ origin: "*", credentials: true }));
