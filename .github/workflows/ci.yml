@@ -36,7 +36,7 @@ jobs:
       - name: Deploy to Server (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
-            host: ${{ secrets.PUBLIC_HOST }}
+            host: ${{ secrets.PUBLIC_IP }}
             port: 17554
             username: ${{ secrets.SSH_USER }}
             key: ${{ secrets.SSH_PRIVATE_KEY }}
