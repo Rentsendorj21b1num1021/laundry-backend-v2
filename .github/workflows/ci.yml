@@ -33,38 +33,42 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/laundry:latest
 
-
+      # (Optional) Private key зөв эсэхийг шалгах — value хэвлэхгүй
       - name: Check SSH key fingerprint (safe)
         run: |
-            set -e
-            mkdir -p ~/.ssh
-            echo "${SSH_PRIVATE_KEY}" > ~/.ssh/key
-            chmod 600 ~/.ssh/key
-            echo "Public key derived from secret:"
-            ssh-keygen -y -f ~/.ssh/key | head -c 80; echo "..."
-            echo "Fingerprint:"
-            ssh-keygen -lf ~/.ssh/key
+          set -e
+          mkdir -p ~/.ssh
+          printf "%s" "$SSH_PRIVATE_KEY" > ~/.ssh/key
+          chmod 600 ~/.ssh/key
+          echo "Public key derived from secret (first 120 chars):"
+          ssh-keygen -y -f ~/.ssh/key | head -c 120; echo "..."
+          echo "Fingerprint:"
+          ssh-keygen -lf ~/.ssh/key
         env:
-            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Write SSH key for deploy
+      # appleboy container дотор /github/home нь runner-ийн _github_home-той mount хийгдсэн байдаг
+      - name: Write SSH key for deploy (for appleboy container)
         run: |
-            mkdir -p ~/.ssh
-            printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-            chmod 600 ~/.ssh/deploy_key
-#
+          set -e
+          mkdir -p /home/runner/work/_temp/_github_home/.ssh
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/work/_temp/_github_home/.ssh/deploy_key
+          chmod 600 /home/runner/work/_temp/_github_home/.ssh/deploy_key
+
       - name: Deploy to Lenovo (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
-            host: ${{ secrets.PUBLIC_IP }}
-            port: ${{ secrets.PUBLIC_PORT }}
-            username: ${{ secrets.SSH_USER }}
-            key_path: /github/home/.ssh/deploy_key
-            script: |
-                hostname
-                whoami
-                docker ps
-                docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
-                docker stop laundry || true
-                docker rm laundry || true
-                docker run -d --name laundry -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
+          host: ${{ secrets.PUBLIC_HOST }}
+          port: ${{ secrets.PUBLIC_PORT }}
+          username: ${{ secrets.SSH_USER }}
+          key_path: /github/home/.ssh/deploy_key
+          script: |
+            set -e
+            echo "Connected to:"
+            hostname
+            whoami
+
+            docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
+            docker stop laundry || true
+            docker rm laundry || true
+            docker run -d --name laundry -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
