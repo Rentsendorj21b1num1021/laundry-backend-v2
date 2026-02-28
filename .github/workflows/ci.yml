@@ -38,12 +38,12 @@ jobs:
         run: |
           set -e
           mkdir -p ~/.ssh
-          printf "%s" "$SSH_PRIVATE_KEY" > ~/.ssh/key
-          chmod 600 ~/.ssh/key
+          printf "%s" "$SSH_PRIVATE_KEY" > ~/.ssh/gh_actions_deploy
+          chmod 600 ~/.ssh/gh_actions_deploy
           echo "Public key derived from secret (first 120 chars):"
-          ssh-keygen -y -f ~/.ssh/key | head -c 120; echo "..."
+          ssh-keygen -y -f ~/.ssh/gh_actions_deploy | head -c 120; echo "..."
           echo "Fingerprint:"
-          ssh-keygen -lf ~/.ssh/key
+          ssh-keygen -lf ~/.ssh/gh_actions_deploy
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
@@ -52,8 +52,8 @@ jobs:
         run: |
           set -e
           mkdir -p /home/runner/work/_temp/_github_home/.ssh
-          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/work/_temp/_github_home/.ssh/deploy_key
-          chmod 600 /home/runner/work/_temp/_github_home/.ssh/deploy_key
+          printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > /home/runner/work/_temp/_github_home/.ssh/gh_actions_deploy
+          chmod 600 /home/runner/work/_temp/_github_home/.ssh/gh_actions_deploy
 
       - name: Deploy to Lenovo (ngrok)
         uses: appleboy/ssh-action@v1.0.3
@@ -61,7 +61,7 @@ jobs:
           host: ${{ secrets.PUBLIC_HOST }}
           port: ${{ secrets.PUBLIC_PORT }}
           username: ${{ secrets.SSH_USER }}
-          key_path: /github/home/.ssh/deploy_key
+          key_path: /github/home/.ssh/gh_actions_deploy
           script: |
             set -e
             echo "Connected to:"
