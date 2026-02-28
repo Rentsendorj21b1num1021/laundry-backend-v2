@@ -33,6 +33,20 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/laundry:latest
 
+          
+      - name: Check SSH key fingerprint (safe)
+        run: |
+            set -e
+            mkdir -p ~/.ssh
+            echo "${SSH_PRIVATE_KEY}" > ~/.ssh/key
+            chmod 600 ~/.ssh/key
+            echo "Public key derived from secret:"
+            ssh-keygen -y -f ~/.ssh/key | head -c 80; echo "..."
+            echo "Fingerprint:"
+            ssh-keygen -lf ~/.ssh/key
+        env:
+            SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
       - name: Deploy to Server (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
