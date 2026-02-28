@@ -47,14 +47,23 @@ jobs:
         env:
             SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      - name: Deploy to Server (ngrok)
+      - name: Write SSH key for deploy
+        run: |
+            mkdir -p ~/.ssh
+            printf "%s" "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+            chmod 600 ~/.ssh/deploy_key
+
+      - name: Deploy to Lenovo (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
-            host: ${{ secrets.PUBLIC_IP }}
-            port: 19480
+            host: ${{ secrets.PUBLIC_HOST }}
+            port: ${{ secrets.PUBLIC_PORT }}
             username: ${{ secrets.SSH_USER }}
-            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            key_path: /github/home/.ssh/deploy_key
             script: |
+                hostname
+                whoami
+                docker ps
                 docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
                 docker stop laundry || true
                 docker rm laundry || true
