@@ -33,7 +33,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/laundry:latest
 
-          
+
       - name: Check SSH key fingerprint (safe)
         run: |
             set -e
@@ -51,7 +51,7 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
             host: ${{ secrets.PUBLIC_IP }}
-            port: 17554
+            port: 19480
             username: ${{ secrets.SSH_USER }}
             key: ${{ secrets.SSH_PRIVATE_KEY }}
             script: |
