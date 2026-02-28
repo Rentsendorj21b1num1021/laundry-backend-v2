@@ -52,6 +52,7 @@ jobs:
         with:
             host: ${{ secrets.PUBLIC_IP }}
             port: 19480
+            passphrase: ${{ secrets.SSH_KEY_PASSPHRASE }}
             username: ${{ secrets.SSH_USER }}
             key: ${{ secrets.SSH_PRIVATE_KEY }}
             script: |
