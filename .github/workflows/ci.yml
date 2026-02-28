@@ -56,7 +56,7 @@ jobs:
       - name: Deploy to Lenovo (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
-            host: ${{ secrets.PUBLIC_HOST }}
+            host: ${{ secrets.PUBLIC_IP }}
             port: ${{ secrets.PUBLIC_PORT }}
             username: ${{ secrets.SSH_USER }}
             key_path: /github/home/.ssh/deploy_key
