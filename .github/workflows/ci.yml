@@ -7,7 +7,8 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-
+    environment: production
+    
     steps:
       # 1️⃣ Code-г checkout хийх
       - name: Checkout code
