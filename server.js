@@ -24,7 +24,7 @@ app.use("/api", organizationRoutes);
 app.use("/api", superAdminRoutes); // *** ШИНЭ ***
 
 app.get("/health", (req, res) => {
-  res.json({ status: "OK", timestamp: new Date() });
+  res.json({ status: "OK, Who are you", timestamp: new Date() });
 });
 
 // Error handling
