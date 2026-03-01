@@ -66,4 +66,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
-            docker run -d --name laundry --env-file /home/${{ secrets.SSH_USER }}/.env -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
+            docker run -d --name laundry --env-file /home/${SSH_USER}/.env -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
