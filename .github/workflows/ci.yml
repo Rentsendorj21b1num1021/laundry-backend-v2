@@ -7,6 +7,7 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    environment: production
 
     steps:
       # 1️⃣ Code-г checkout хийх
@@ -22,6 +23,12 @@ jobs:
       # 3️⃣ Dependencies install
       - name: Install dependencies
         run: npm install
+
+      - name: Create .env file
+        run: |
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+          echo "MONGO_URL=${{ secrets.MONGO_URL }}" >> .env
+          echo "PORT=${{ secrets.PORT }}" >> .env
 
       # 4️⃣ Docker Hub login
       - name: Log in to Docker Hub
@@ -54,4 +61,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
-            docker run -d --name laundry -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
+            docker run -d --name laundry --env-file .env -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
