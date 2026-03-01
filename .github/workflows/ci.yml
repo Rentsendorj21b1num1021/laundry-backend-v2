@@ -21,7 +21,6 @@ jobs:
 
       # 3️⃣ Dependencies install
       - name: Install dependencies
-        run: npm i
         run: npm install
 
       # 4️⃣ Docker Hub login
@@ -43,10 +42,6 @@ jobs:
       - name: Deploy to Lenovo (ngrok)
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.PUBLIC_IP }}
-          port: ${{ secrets.PUBLIC_PORT }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
           host: ${{ secrets.PUBLIC_IP }}           # ngrok TCP host
           port: ${{ secrets.PUBLIC_PORT }}        # ngrok TCP port
           username: ${{ secrets.SSH_USER }}       # SSH user on Lenovo
@@ -59,3 +54,4 @@ jobs:
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
+            docker run -d --name laundry -p 8000:8000 ${{ secrets.DOCKER_USERNAME }}/laundry:latest
