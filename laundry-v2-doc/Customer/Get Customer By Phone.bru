@@ -5,15 +5,15 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/customer/by-phone
+  url: {{baseUrl}}/api/customer/by-phone?phone=99001122
   body: none
   auth: bearer
 }
 
-auth:bearer {
-  token: {{token}}
+params:query {
+  phone: 99001122
 }
 
-query {
-  phone: 99001122
+auth:bearer {
+  token: {{token}}
 }
