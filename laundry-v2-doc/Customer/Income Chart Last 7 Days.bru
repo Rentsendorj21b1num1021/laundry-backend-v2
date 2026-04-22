@@ -1,0 +1,15 @@
+meta {
+  name: Income Chart Last 7 Days
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/income/chart/last-7-days
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

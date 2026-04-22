@@ -1,0 +1,23 @@
+meta {
+  name: Add User To Organization
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/organizations/add-user
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": "USER_ID_HERE",
+    "role": "employee",
+    "permissions": []
+  }
+}

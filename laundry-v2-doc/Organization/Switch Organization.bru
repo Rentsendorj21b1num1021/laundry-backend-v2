@@ -1,0 +1,21 @@
+meta {
+  name: Switch Organization
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/organizations/switch
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "organizationId": "ORG_ID_HERE"
+  }
+}

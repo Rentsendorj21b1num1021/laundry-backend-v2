@@ -1,0 +1,20 @@
+meta {
+  name: Get Organizations Revenue
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/api/admin/stats/organizations-revenue
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+query {
+  startDate:
+  endDate:
+}

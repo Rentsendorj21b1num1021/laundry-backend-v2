@@ -1,0 +1,23 @@
+meta {
+  name: Get All Users
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/api/admin/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+query {
+  page: 1
+  limit: 50
+  role:
+  isActive:
+  search:
+}

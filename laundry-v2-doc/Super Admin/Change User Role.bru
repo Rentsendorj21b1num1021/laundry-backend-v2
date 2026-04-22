@@ -1,0 +1,21 @@
+meta {
+  name: Change User Role
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/api/admin/users/USER_ID_HERE/role
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "role": "manager"
+  }
+}

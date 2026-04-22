@@ -1,0 +1,15 @@
+meta {
+  name: Get Organization Stats
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/admin/organizations/ORG_ID_HERE/stats
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
