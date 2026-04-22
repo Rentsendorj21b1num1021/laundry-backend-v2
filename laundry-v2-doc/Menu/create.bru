@@ -10,13 +10,17 @@ post {
   auth: bearer
 }
 
+headers {
+  x-organization-id: {{organizationId}}
+}
+
 auth:bearer {
   token: {{token}}
 }
 
 body:json {
   {
-      "service": "washing",
+      "service": "laundry",
       "categories": [
           {
               "id": "cat_wash_30",
