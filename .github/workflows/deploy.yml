@@ -39,23 +39,19 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/laundry:latest
 
-      # 6️⃣ Deploy via SSH to Lenovo/ngrok
-      - name: Deploy to Lenovo (ngrok)
+      # 6️⃣ Deploy via SSH to AWS EC2
+      - name: Deploy to AWS EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.PUBLIC_IP }}           # ngrok TCP host
-          port: ${{ secrets.PUBLIC_PORT }}        # ngrok TCP port
-          username: ${{ secrets.SSH_USER }}       # SSH user on Lenovo
-          key: ${{ secrets.SSH_PRIVATE_KEY }}     # Private key secret
+          host: ${{ secrets.EC2_PUBLIC_IP }}
+          port: 22
+          username: ubuntu
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
-            echo "Deploying to Lenovo..."
-            hostname
-            whoami
-            docker ps
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
-            docker run -d --name laundry -p 8000:8000 \
-              -e JWT_SECRET=${{ secrets.JWT_SECRET }} \
-              -e MONGO_URL=${{ secrets.MONGO_URL }} \
+            docker run -d --name laundry --restart always -p 4000:4000 \
+              -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
+              -e MONGO_URL="${{ secrets.MONGO_URL }}" \
               ${{ secrets.DOCKER_USERNAME }}/laundry:latest
