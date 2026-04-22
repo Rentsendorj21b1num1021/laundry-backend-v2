@@ -1,0 +1,24 @@
+meta {
+  name: register
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/admin/users/super-admin
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "username": "superadmin2",
+    "password": "securepassword123",
+    "phone": "99998888",
+    "email": "superadmin2@example.com"
+  }
+}

@@ -1,0 +1,27 @@
+meta {
+  name: order
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/getOrders
+  body: none
+  auth: bearer
+}
+
+params:query {
+  page: 1
+  limit: 50
+  status: 
+  customer_id: 
+  employee_id: 
+  minPrice: 
+  maxPrice: 
+  startDate: 
+  endDate: 
+}
+
+auth:bearer {
+  token: {{token}}
+}

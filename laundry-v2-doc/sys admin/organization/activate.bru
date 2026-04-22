@@ -1,0 +1,15 @@
+meta {
+  name: activate
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/api/admin/organizations/ORG_ID_HERE/activate
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

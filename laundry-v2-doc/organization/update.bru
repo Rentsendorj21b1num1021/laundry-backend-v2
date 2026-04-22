@@ -1,0 +1,25 @@
+meta {
+  name: update
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{baseUrl}}/api/organizations/settings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Шинэ нэр",
+    "address": "Шинэ хаяг",
+    "phone": "77001122",
+    "bonusPercentage": 0.1,
+    "orderPrefix": "LND"
+  }
+}

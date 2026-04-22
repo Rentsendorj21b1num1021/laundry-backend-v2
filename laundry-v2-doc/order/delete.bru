@@ -1,0 +1,21 @@
+meta {
+  name: delete
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/deleteOrder
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "orderId": "ORDER_ID_HERE"
+  }
+}

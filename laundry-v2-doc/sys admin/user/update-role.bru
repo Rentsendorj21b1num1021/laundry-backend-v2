@@ -1,0 +1,21 @@
+meta {
+  name: update-role
+  type: http
+  seq: 1
+}
+
+put {
+  url: {{baseUrl}}/api/admin/users/USER_ID_HERE/role
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "role": "manager"
+  }
+}

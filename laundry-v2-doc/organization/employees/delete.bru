@@ -1,0 +1,21 @@
+meta {
+  name: delete
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/organizations/remove-user
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "userId": "USER_ID_HERE"
+  }
+}

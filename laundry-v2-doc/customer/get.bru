@@ -1,0 +1,19 @@
+meta {
+  name: get
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/api/customer/by-phone?phone=99001122
+  body: none
+  auth: bearer
+}
+
+params:query {
+  phone: 99001122
+}
+
+auth:bearer {
+  token: {{token}}
+}

@@ -1,0 +1,31 @@
+meta {
+  name: create
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/order
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "customerId": "CUSTOMER_ID_HERE",
+    "items": [
+      {
+        "name": "Цамц угаах",
+        "price": 5000,
+        "quantity": 2
+      }
+    ],
+    "usedBonus": 0,
+    "paymentMethod": "cash",
+    "notes": ""
+  }
+}

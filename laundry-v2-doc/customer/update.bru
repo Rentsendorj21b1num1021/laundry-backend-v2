@@ -1,0 +1,25 @@
+meta {
+  name: update
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/api/updateCustomer
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "customerId": "CUSTOMER_ID_HERE",
+    "name": "Шинэ нэр",
+    "phone": "99001122",
+    "email": "new@example.com",
+    "address": "Шинэ хаяг"
+  }
+}

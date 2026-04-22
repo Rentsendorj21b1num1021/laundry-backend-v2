@@ -1,0 +1,15 @@
+meta {
+  name: get
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/api/menus
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

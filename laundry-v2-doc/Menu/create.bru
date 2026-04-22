@@ -1,0 +1,218 @@
+meta {
+  name: create
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/api/menus
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+      "service": "laundry",
+      "categories": [
+          {
+              "id": "cat_wash_30",
+              "category": "Угаалга /30 кг/",
+              "items": [
+                  {
+                      "id": "wash30_cold",
+                      "name": "Хүйтэн ус (30кг)",
+                      "price": 17000,
+                      "parentId": "cat_wash_30"
+                  },
+                  {
+                      "id": "wash30_hot",
+                      "name": "Халуун ус (30кг)",
+                      "price": 19000,
+                      "parentId": "cat_wash_30"
+                  },
+                  {
+                      "id": "wash30_deep",
+                      "name": "Гүн угаалга (30кг)",
+                      "price": 21000,
+                      "parentId": "cat_wash_30"
+                  }
+              ]
+          },
+          {
+              "id": "cat_wash_20",
+              "category": "Угаалга /20 кг/",
+              "items": [
+                  {
+                      "id": "wash20_cold",
+                      "name": "Хүйтэн ус (20кг)",
+                      "price": 15000,
+                      "parentId": "cat_wash_20"
+                  },
+                  {
+                      "id": "wash20_hot",
+                      "name": "Халуун ус (20кг)",
+                      "price": 17000,
+                      "parentId": "cat_wash_20"
+                  },
+                  {
+                      "id": "wash20_deep",
+                      "name": "Гүн угаалга (20кг)",
+                      "price": 19000,
+                      "parentId": "cat_wash_20"
+                  }
+              ]
+          },
+          {
+              "id": "cat_wash_15",
+              "category": "Угаалга /15 кг/",
+              "items": [
+                  {
+                      "id": "wash15_cold",
+                      "name": "Хүйтэн ус (15кг)",
+                      "price": 13000,
+                      "parentId": "cat_wash_15"
+                  },
+                  {
+                      "id": "wash15_hot",
+                      "name": "Халуун ус (15кг)",
+                      "price": 15000,
+                      "parentId": "cat_wash_15"
+                  },
+                  {
+                      "id": "wash15_deep",
+                      "name": "Гүн угаалга (15кг)",
+                      "price": 17000,
+                      "parentId": "cat_wash_15"
+                  }
+              ]
+          },
+          {
+              "id": "cat_dry",
+              "category": "Хатаалга",
+              "items": [
+                  {
+                      "id": "dry_40min",
+                      "name": "Хатаалга (40 минут)",
+                      "price": 17000,
+                      "parentId": "cat_dry"
+                  }
+              ]
+          },
+          {
+              "id": "cat_shoes",
+              "category": "Пүүз угаалга",
+              "items": [
+                  {
+                      "id": "shoes_wash",
+                      "name": "1–5 хос пүүз угаалга",
+                      "price": 13000,
+                      "parentId": "cat_shoes"
+                  },
+                  {
+                      "id": "shoes_dry",
+                      "name": "Пүүз хатаалга",
+                      "price": 13000,
+                      "parentId": "cat_shoes"
+                  }
+              ]
+          },
+          {
+              "id": "cat_extra",
+              "category": "Угаалгын бодис",
+              "items": [
+                  {
+                      "id": "extra_detergent",
+                      "name": "Угаалгын нунтаг (1 уут)",
+                      "price": 2000,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_gel_wax",
+                      "name": "Гелэн вокс (1 ширхэг)",
+                      "price": 2000,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_bleach",
+                      "name": "Будаг түгжигч (1 ширхэг)",
+                      "price": 1500,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_refresh",
+                      "name": "Хувцас сэргээгч (1 ширхэг)",
+                      "price": 2000,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_super_whiten",
+                      "name": "Super цайруулагч (1 ширхэг)",
+                      "price": 8000,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_white_wax",
+                      "name": "Цагаан хувцасны вок",
+                      "price": 16000,
+                      "parentId": "cat_extra"
+                  },
+                  {
+                      "id": "extra_fabric_fix",
+                      "name": "Хөшиг тюль сэргээгч (1 ширхэг)",
+                      "price": 8000,
+                      "parentId": "cat_extra"
+                  }
+              ]
+          },
+          {
+              "id": "cat_cleaning",
+              "category": "Цэвэрлэгээний бодис",
+              "items": [
+                  {
+                      "id": "clean_stain_250",
+                      "name": "Толбо арилгагч 250 мл",
+                      "price": 16500,
+                      "parentId": "cat_cleaning"
+                  },
+                  {
+                      "id": "clean_stain_500",
+                      "name": "Толбо арилгагч 500 мл",
+                      "price": 22000,
+                      "parentId": "cat_cleaning"
+                  },
+                  {
+                      "id": "clean_soap",
+                      "name": "Толбоны саван",
+                      "price": 8500,
+                      "parentId": "cat_cleaning"
+                  }
+              ]
+          },
+          {
+              "id": "cat_other",
+              "category": "Бусад",
+              "items": [
+                  {
+                      "id": "other_bag_small",
+                      "name": "Тор гялгар",
+                      "price": 500
+                  },
+                  {
+                      "id": "other_bag_medium",
+                      "name": "Тор гялгар /том/",
+                      "price": 2000
+                  },
+                  {
+                      "id": "other_bag_large",
+                      "name": "Тор /том/",
+                      "price": 12000
+                  }
+              ]
+          }
+      ]
+  }
+}
