@@ -49,7 +49,7 @@ export const createCustomer = async (req, res) => {
 // Бүх үйлчлүүлэгчдийг авах
 export const getAllCustomers = async (req, res) => {
   try {
-    const { phone, name, page = 1, limit = 50 } = req.query;
+    const { phone, name, page, limit } = req.query;
     const organizationId = req.organizationId;
 
     // *** Заавал тухайн байгууллагын үйлчлүүлэгчдийг л харуулна ***
