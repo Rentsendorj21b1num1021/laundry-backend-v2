@@ -82,6 +82,11 @@ const organizationSchema = new mongoose.Schema(
 
       // Захиалгын автомат баталгаажуулалт
       autoConfirmOrders: { type: Boolean, default: true },
+
+      // Захиалга бүртгэх үед баримт (receipt) хэвлэх эсэх.
+      // true → frontend автоматаар print dialog нээнэ
+      // false → print алгасна
+      printReceipts: { type: Boolean, default: false },
     },
   },
   { timestamps: true },

@@ -227,6 +227,7 @@ export const createOrder = async (req, res) => {
       message: "Захиалга амжилттай бүртгэгдлээ",
       order,
       updatedCustomer: customer || null,
+      printReceipt: req.organization.settings?.printReceipts ?? false,
     });
   } catch (err) {
     console.error("Create order error:", err);
