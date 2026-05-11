@@ -48,6 +48,7 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
+            docker image prune -af
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
