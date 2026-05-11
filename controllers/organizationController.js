@@ -234,9 +234,15 @@ export const updateOrganizationSettings = async (req, res) => {
     // OwnerId өөрчлөхийг хориглох
     delete updates.ownerId;
 
+    // settings дотор байгаа талбаруудыг зөв замаар шинэчлэх
+    if (updates.printReceipts !== undefined) {
+      updates["settings.printReceipts"] = updates.printReceipts;
+      delete updates.printReceipts;
+    }
+
     const organization = await Organization.findByIdAndUpdate(
       organizationId,
-      updates,
+      { $set: updates },
       { new: true, runValidators: true },
     );
 
