@@ -1,5 +1,6 @@
 import Customer from "../models/customer.js";
 import Order from "../models/order.js";
+import Counter from "../models/counter.js";
 import mongoose from "mongoose";
 
 // 1️⃣ Customer бүртгэх
@@ -179,23 +180,15 @@ export const createOrder = async (req, res) => {
       earnedBonus = toTwoDecimal(finalTotal * bonusPercentage);
     }
 
-    // 5️⃣ Захиалгын дугаар үүсгэх
-    // Сүүлийн захиалгын дугаарыг олох
-    const lastOrder = await Order.findOne({ organizationId, isDeleted: { $ne: true } })
-      .sort({ createdAt: -1 })
-      .select("orderNumber");
+    // 5️⃣ Захиалгын дугаар үүсгэх (atomic — race condition-оос хамгаалсан)
+    const prefix = req.organization.orderPrefix || "ORD";
+    const counter = await Counter.findOneAndUpdate(
+      { _id: `orderNumber:${organizationId}` },
+      { $inc: { seq: 1 } },
+      { new: true, upsert: true }
+    );
+    const orderNumber = `${prefix}-${counter.seq.toString().padStart(4, "0")}`;
 
-    let orderNumber;
-    if (lastOrder && lastOrder.orderNumber) {
-      // Дугаараас тоог салгаж авах (жишээ: BZ-0123 -> 123)
-      const lastNum = parseInt(lastOrder.orderNumber.split("-")[1] || "0");
-      const newNum = (lastNum + 1).toString().padStart(4, "0");
-      const prefix = req.organization.orderPrefix || "ORD";
-      orderNumber = `${prefix}-${newNum}`;
-    } else {
-      const prefix = req.organization.orderPrefix || "ORD";
-      orderNumber = `${prefix}-0001`;
-    }
 
     // 6️⃣ Order үүсгэх
     const order = await Order.create({
