@@ -38,7 +38,7 @@ async function createSuperAdmin() {
     const passwordHash = await bcrypt.hash(superAdminData.password, 10);
 
     // Super admin үүсгэх
-    const superAdmin = await User.create({
+    await User.create({
       username: superAdminData.username,
       passwordHash,
       phone: superAdminData.phone,
