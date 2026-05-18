@@ -181,7 +181,7 @@ export const createOrder = async (req, res) => {
 
     // 5️⃣ Захиалгын дугаар үүсгэх
     // Сүүлийн захиалгын дугаарыг олох
-    const lastOrder = await Order.findOne({ organizationId })
+    const lastOrder = await Order.findOne({ organizationId, isDeleted: { $ne: true } })
       .sort({ createdAt: -1 })
       .select("orderNumber");
 
@@ -252,6 +252,7 @@ export const getMonthlyIncomeChart = async (req, res) => {
           organizationId: new mongoose.Types.ObjectId(organizationId),
           createdAt: { $gte: start },
           status: { $in: ["PAID"] }, // Зөвхөн төлөгдсөн
+          isDeleted: { $ne: true },
         },
       },
       {
@@ -320,6 +321,7 @@ export const getLast7DaysIncome = async (req, res) => {
             $lte: today,
           },
           status: { $in: ["PAID"] },
+          isDeleted: { $ne: true },
         },
       },
       {
@@ -396,6 +398,7 @@ export const getIncomeByDateRange = async (req, res) => {
             $lte: end,
           },
           status: { $in: ["PAID"] },
+          isDeleted: { $ne: true },
         },
       },
       {
@@ -471,6 +474,7 @@ export const getCustomerOrderHistory = async (req, res) => {
       organizationId,
       customer_id: customerId,
       status: { $in: ["PAID"] },
+      isDeleted: { $ne: true },
     })
       .sort({ createdAt: -1 })
       .populate("employee_id", "username name")
@@ -507,7 +511,7 @@ export const getOrderList = async (req, res) => {
     const organizationId = req.organizationId;
 
     // *** Заавал тухайн байгууллагын захиалгууд ***
-    const filter = { organizationId };
+    const filter = { organizationId, isDeleted: { $ne: true } };
 
     if (status) filter.status = status;
     if (customer_id) filter.customer_id = customer_id;
@@ -591,7 +595,7 @@ export const deleteOrder = async (req, res) => {
       }
     }
 
-    await Order.findByIdAndDelete(orderId);
+    await Order.findByIdAndUpdate(orderId, { isDeleted: true });
 
     res.status(200).json({
       message: "Захиалга амжилттай устгагдлаа",
@@ -666,6 +670,7 @@ export const getStatistics = async (req, res) => {
               organizationId: new mongoose.Types.ObjectId(organizationId),
               status: "PAID",
               createdAt: { $gte: startDate },
+              isDeleted: { $ne: true },
             },
           },
           {
@@ -679,6 +684,7 @@ export const getStatistics = async (req, res) => {
           organizationId,
           status: "PAID",
           createdAt: { $gte: startDate },
+          isDeleted: { $ne: true },
         }),
         Customer.countDocuments({ organizationId }),
         Order.aggregate([
@@ -687,6 +693,7 @@ export const getStatistics = async (req, res) => {
               organizationId: new mongoose.Types.ObjectId(organizationId),
               status: "PAID",
               createdAt: { $gte: startDate },
+              isDeleted: { $ne: true },
             },
           },
           {

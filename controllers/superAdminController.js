@@ -143,12 +143,13 @@ export const getOrganizationStats = async (req, res) => {
     const [customerCount, orderCount, totalRevenue, employeeCount] =
       await Promise.all([
         Customer.countDocuments({ organizationId }),
-        Order.countDocuments({ organizationId, status: "PAID" }),
+        Order.countDocuments({ organizationId, status: "PAID", isDeleted: { $ne: true } }),
         Order.aggregate([
           {
             $match: {
               organizationId: new mongoose.Types.ObjectId(organizationId),
               status: "PAID",
+              isDeleted: { $ne: true },
             },
           },
           {
@@ -341,9 +342,9 @@ export const getSystemStats = async (req, res) => {
       Organization.countDocuments({ status: "active" }),
       User.countDocuments(),
       Customer.countDocuments(),
-      Order.countDocuments({ status: "PAID" }),
+      Order.countDocuments({ status: "PAID", isDeleted: { $ne: true } }),
       Order.aggregate([
-        { $match: { status: "PAID" } },
+        { $match: { status: "PAID", isDeleted: { $ne: true } } },
         { $group: { _id: null, total: { $sum: "$total_price" } } },
       ]),
     ]);
@@ -372,7 +373,7 @@ export const getOrganizationsRevenue = async (req, res) => {
   try {
     const { startDate, endDate } = req.query;
 
-    const matchStage = { status: "PAID" };
+    const matchStage = { status: "PAID", isDeleted: { $ne: true } };
 
     if (startDate || endDate) {
       matchStage.createdAt = {};

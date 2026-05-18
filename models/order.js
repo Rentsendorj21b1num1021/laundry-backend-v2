@@ -74,6 +74,8 @@ const orderSchema = new mongoose.Schema(
 
     // Тэмдэглэл
     notes: { type: String },
+
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true },
 );
