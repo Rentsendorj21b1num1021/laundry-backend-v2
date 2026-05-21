@@ -3,11 +3,34 @@ name: Node.js CI/CD && Deploy
 on:
   push:
     branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run lint
+        run: npm run lint
+
   build-and-deploy:
     runs-on: ubuntu-latest
     environment: production
+    needs: lint
+    if: github.event_name == 'push'
 
     steps:
       # 1️⃣ Code-г checkout хийх
@@ -23,7 +46,7 @@ jobs:
       # 3️⃣ Dependencies install
       - name: Install dependencies
         run: npm install
-      
+
       # 4️⃣ Docker Hub login
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
