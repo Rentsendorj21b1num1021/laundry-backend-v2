@@ -1,17 +1,17 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const organizationSchema = new mongoose.Schema(
   {
     name: {
       type: String,
       required: true,
-      trim: true,
+      trim: true
     },
 
     // Бизнесийн төрөл (угаалга, кафе гэх мэт)
     businessType: {
       type: String,
-      default: "laundry",
+      default: 'laundry'
     },
 
     // Холбоо барих мэдээлэл
@@ -24,39 +24,39 @@ const organizationSchema = new mongoose.Schema(
       type: Number,
       default: 0.05, // 5% бонус
       min: 0,
-      max: 1,
+      max: 1
     },
 
     currency: {
       type: String,
-      default: "MNT",
+      default: 'MNT'
     },
 
     // Идэвхитэй эсэх
     status: {
       type: String,
-      enum: ["active", "inactive", "suspended"],
-      default: "active",
+      enum: ['active', 'inactive', 'suspended'],
+      default: 'active'
     },
 
     // Захиалгын дугаарын өмнөх үсэг (жишээ: BZ-001, SH-001)
     orderPrefix: {
       type: String,
-      maxlength: 3,
+      maxlength: 3
     },
 
     // Эзэмшигч
     ownerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
 
     // Subscription мэдээлэл (хэрэв төлбөртэй болговол)
     subscriptionPlan: {
       type: String,
-      enum: ["free", "basic", "premium"],
-      default: "free",
+      enum: ['free', 'basic', 'premium'],
+      default: 'free'
     },
 
     subscriptionExpiry: { type: Date },
@@ -65,8 +65,8 @@ const organizationSchema = new mongoose.Schema(
     settings: {
       // Нээх цаг
       workingHours: {
-        start: { type: String, default: "09:00" },
-        end: { type: String, default: "18:00" },
+        start: { type: String, default: '09:00' },
+        end: { type: String, default: '18:00' }
       },
 
       // Амралтын өдрүүд
@@ -76,8 +76,8 @@ const organizationSchema = new mongoose.Schema(
       paymentMethods: [
         {
           type: String,
-          enum: ["cash", "card", "qpay", "monpay", "hipay"],
-        },
+          enum: ['cash', 'card', 'qpay', 'monpay', 'hipay']
+        }
       ],
 
       // Захиалгын автомат баталгаажуулалт
@@ -86,14 +86,14 @@ const organizationSchema = new mongoose.Schema(
       // Захиалга бүртгэх үед баримт (receipt) хэвлэх эсэх.
       // true → frontend автоматаар print dialog нээнэ
       // false → print алгасна
-      printReceipts: { type: Boolean, default: false },
-    },
+      printReceipts: { type: Boolean, default: false }
+    }
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
 // Index
-organizationSchema.index({ ownerId: 1 });
-organizationSchema.index({ status: 1 });
+organizationSchema.index({ ownerId: 1 })
+organizationSchema.index({ status: 1 })
 
-export default mongoose.model("Organization", organizationSchema);
+export default mongoose.model('Organization', organizationSchema)

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const ItemSchema = new mongoose.Schema({
   id: { type: String, required: true },
@@ -9,8 +9,8 @@ const ItemSchema = new mongoose.Schema({
   // Нэмэлт мэдээлэл
   description: { type: String },
   duration: { type: Number }, // Минутаар (хэдэн минут үргэлжлэх)
-  isAvailable: { type: Boolean, default: true },
-});
+  isAvailable: { type: Boolean, default: true }
+})
 
 const CategorySchema = new mongoose.Schema({
   id: { type: String, required: true },
@@ -18,29 +18,29 @@ const CategorySchema = new mongoose.Schema({
   items: [ItemSchema],
 
   // Эрэмбэ (дэлгэцэнд хэрхэн харуулах)
-  order: { type: Number, default: 0 },
-});
+  order: { type: Number, default: 0 }
+})
 
 const MenuSchema = new mongoose.Schema(
   {
     // *** ШИНЭ: Байгууллагын ID ***
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: 'Organization',
       required: true,
-      index: true,
+      index: true
     },
 
     service: { type: String, required: true },
     categories: [CategorySchema],
 
     // Идэвхитэй эсэх
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true }
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
 // Газар бүр өөрийн гэсэн меню-тай байх
-MenuSchema.index({ organizationId: 1, service: 1 }, { unique: true });
+MenuSchema.index({ organizationId: 1, service: 1 }, { unique: true })
 
-export default mongoose.model("Menu", MenuSchema);
+export default mongoose.model('Menu', MenuSchema)

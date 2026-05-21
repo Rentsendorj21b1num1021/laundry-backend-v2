@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const customerSchema = new mongoose.Schema(
   {
     // *** ШИНЭ: Байгууллагын ID ***
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: 'Organization',
       required: true,
-      index: true, // Хурдан хайлт хийхэд тустай
+      index: true // Хурдан хайлт хийхэд тустай
     },
 
     phone: { type: String, required: true },
@@ -21,7 +21,7 @@ const customerSchema = new mongoose.Schema(
 
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User'
     },
 
     // Сүүлд үйлчлүүлсэн огноо
@@ -31,19 +31,19 @@ const customerSchema = new mongoose.Schema(
     isActive: { type: Boolean, default: true },
 
     // Тэмдэглэл
-    notes: { type: String },
+    notes: { type: String }
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
 // *** ЧУХАЛ: Compound unique index ***
 // Утасны дугаар нь зөвхөн тухайн газар дотор уникаль байх ёстой
-customerSchema.index({ organizationId: 1, phone: 1 }, { unique: true });
+customerSchema.index({ organizationId: 1, phone: 1 }, { unique: true })
 
 // Бонусоор хайх
-customerSchema.index({ organizationId: 1, total_bonus: -1 });
+customerSchema.index({ organizationId: 1, total_bonus: -1 })
 
 // Сүүлд үйлчлүүлсэн огноогоор хайх
-customerSchema.index({ organizationId: 1, lastVisit: -1 });
+customerSchema.index({ organizationId: 1, lastVisit: -1 })
 
-export default mongoose.model("Customer", customerSchema);
+export default mongoose.model('Customer', customerSchema)

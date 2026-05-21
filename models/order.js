@@ -1,32 +1,32 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const orderSchema = new mongoose.Schema(
   {
     // *** ШИНЭ: Байгууллагын ID ***
     organizationId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: 'Organization',
       required: true,
-      index: true,
+      index: true
     },
 
     // Захиалгын дугаар (газар бүрт өөр формат байж болно)
     // Жишээ: BZ-0001, SH-0001
     orderNumber: {
       type: String,
-      required: true,
+      required: true
     },
 
     customer_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Customer",
-      required: false,
+      ref: 'Customer',
+      required: false
     },
 
     employee_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
+      ref: 'User',
+      required: true
     },
 
     items: [
@@ -35,35 +35,35 @@ const orderSchema = new mongoose.Schema(
         name: String,
         price: Number,
         quantity: { type: Number, default: 1 },
-        parentId: String,
-      },
+        parentId: String
+      }
     ],
 
     total_price: {
       type: Number,
-      required: true,
+      required: true
     },
 
     used_bonus: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     earned_bonus: {
       type: Number,
-      default: 0,
+      default: 0
     },
 
     status: {
       type: String,
-      enum: ["PENDING", "PAID", "CANCELLED", "REFUNDED"],
-      default: "PAID",
+      enum: ['PENDING', 'PAID', 'CANCELLED', 'REFUNDED'],
+      default: 'PAID'
     },
 
     // Төлбөрийн мэдээлэл
     paymentMethod: {
       type: String,
-      enum: ["cash", "card", "qpay", "monpay", "hipay", "bonus"],
+      enum: ['cash', 'card', 'qpay', 'monpay', 'hipay', 'bonus']
     },
 
     // Төлсөн дүн
@@ -75,16 +75,16 @@ const orderSchema = new mongoose.Schema(
     // Тэмдэглэл
     notes: { type: String },
 
-    isDeleted: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false }
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
 // Index - Хурдан хайлт хийхэд чухал
-orderSchema.index({ organizationId: 1, createdAt: -1 });
-orderSchema.index({ organizationId: 1, orderNumber: 1 }, { unique: true });
-orderSchema.index({ organizationId: 1, customer_id: 1 });
-orderSchema.index({ organizationId: 1, employee_id: 1 });
-orderSchema.index({ organizationId: 1, status: 1 });
+orderSchema.index({ organizationId: 1, createdAt: -1 })
+orderSchema.index({ organizationId: 1, orderNumber: 1 }, { unique: true })
+orderSchema.index({ organizationId: 1, customer_id: 1 })
+orderSchema.index({ organizationId: 1, employee_id: 1 })
+orderSchema.index({ organizationId: 1, status: 1 })
 
-export default mongoose.model("Order", orderSchema);
+export default mongoose.model('Order', orderSchema)

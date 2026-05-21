@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const newOrderSchema = new mongoose.Schema(
   {
@@ -12,25 +12,25 @@ const newOrderSchema = new mongoose.Schema(
         name: String,
         price: Number,
         quantity: { type: Number, default: 1 },
-        parentId: String,
-      },
+        parentId: String
+      }
     ],
     total_price: { type: Number, required: true },
     used_bonus: { type: Number, default: 0 },
     earned_bonus: { type: Number, default: 0 },
     status: {
       type: String,
-      enum: ["PENDING", "PAID", "CANCELLED", "REFUNDED"],
-      default: "PAID",
+      enum: ['PENDING', 'PAID', 'CANCELLED', 'REFUNDED'],
+      default: 'PAID'
     },
     paymentMethod: String,
     paidAmount: Number,
     changeAmount: { type: Number, default: 0 },
-    notes: String,
+    notes: String
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
-newOrderSchema.index({ organizationId: 1, orderNumber: 1 }, { unique: true });
+newOrderSchema.index({ organizationId: 1, orderNumber: 1 }, { unique: true })
 
-export default newOrderSchema;
+export default newOrderSchema

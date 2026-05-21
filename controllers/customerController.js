@@ -1,29 +1,30 @@
-import Customer from "../models/customer.js";
-import Order from "../models/order.js";
-import Counter from "../models/counter.js";
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
+
+import Counter from '../models/counter.js'
+import Customer from '../models/customer.js'
+import Order from '../models/order.js'
 
 // 1️⃣ Customer бүртгэх
 export const createCustomer = async (req, res) => {
   try {
-    const { phone, name, email, address } = req.body;
-    const createdBy = req.user.id;
-    const organizationId = req.organizationId; // middleware-с
+    const { phone, name, email, address } = req.body
+    const createdBy = req.user.id
+    const organizationId = req.organizationId // middleware-с
 
     // Утасны дугаар шалгах
     if (!phone) {
-      return res.status(400).json({ message: "Утасны дугаар шаардлагатай" });
+      return res.status(400).json({ message: 'Утасны дугаар шаардлагатай' })
     }
     // *** Зөвхөн тухайн газар дотор уникаль эсэхийг шалгах ***
     const existingCustomer = await Customer.findOne({
       organizationId,
-      phone,
-    });
+      phone
+    })
 
     if (existingCustomer) {
       return res.status(400).json({
-        message: "Энэ утасны дугаартай хэрэглэгч аль хэдийн бүртгэлтэй байна",
-      });
+        message: 'Энэ утасны дугаартай хэрэглэгч аль хэдийн бүртгэлтэй байна'
+      })
     }
 
     // Customer үүсгэх
@@ -34,161 +35,150 @@ export const createCustomer = async (req, res) => {
       email: email || null,
       address: address || null,
       createdBy,
-      lastVisit: new Date(),
-    });
+      lastVisit: new Date()
+    })
 
     res.status(200).json({
-      message: "Хэрэглэгч амжилттай бүртгэгдлээ",
-      customer,
-    });
+      message: 'Хэрэглэгч амжилттай бүртгэгдлээ',
+      customer
+    })
   } catch (err) {
-    console.error("Create customer error:", err);
-    res.status(500).json({ message: "Server алдаа", error: err.message });
+    console.error('Create customer error:', err)
+    res.status(500).json({ message: 'Server алдаа', error: err.message })
   }
-};
+}
 
 // Бүх үйлчлүүлэгчдийг авах
 export const getAllCustomers = async (req, res) => {
   try {
-    const { phone, name, page, limit } = req.query;
-    const organizationId = req.organizationId;
+    const { phone, name, page, limit } = req.query
+    const organizationId = req.organizationId
 
     // *** Заавал тухайн байгууллагын үйлчлүүлэгчдийг л харуулна ***
-    let filter = { organizationId };
+    const filter = { organizationId }
 
     // Хайлт
     if (phone) {
-      filter.phone = { $regex: phone, $options: "i" };
+      filter.phone = { $regex: phone, $options: 'i' }
     }
 
     if (name) {
-      filter.name = { $regex: name, $options: "i" };
+      filter.name = { $regex: name, $options: 'i' }
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10)
 
     const [customers, total] = await Promise.all([
-      Customer.find(filter)
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit))
-        .populate("createdBy", "username name"),
-      Customer.countDocuments(filter),
-    ]);
+      Customer.find(filter).sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10)).populate('createdBy', 'username name'),
+      Customer.countDocuments(filter)
+    ])
 
     res.status(200).json({
-      message: "Хэрэглэгчид амжилттай ирлээ",
+      message: 'Хэрэглэгчид амжилттай ирлээ',
       customers,
       pagination: {
-        currentPage: parseInt(page),
-        totalPages: Math.ceil(total / parseInt(limit)),
+        currentPage: parseInt(page, 10),
+        totalPages: Math.ceil(total / parseInt(limit, 10)),
         totalCustomers: total,
-        limit: parseInt(limit),
-      },
-    });
+        limit: parseInt(limit, 10)
+      }
+    })
   } catch (err) {
-    console.error("Get customers error:", err);
-    res.status(500).json({ message: "Server алдаа", error: err.message });
+    console.error('Get customers error:', err)
+    res.status(500).json({ message: 'Server алдаа', error: err.message })
   }
-};
+}
 
 // Утасны дугаараар хайх
 export const getCustomerByPhone = async (req, res) => {
   try {
-    const { phone } = req.query;
-    const organizationId = req.organizationId;
+    const { phone } = req.query
+    const organizationId = req.organizationId
 
     if (!phone) {
-      return res.status(400).json({ message: "Утасны дугаар шаардлагатай" });
+      return res.status(400).json({ message: 'Утасны дугаар шаардлагатай' })
     }
 
     // *** Зөвхөн тухайн газрын үйлчлүүлэгчээс хайх ***
     const customer = await Customer.findOne({
       organizationId,
-      phone,
-    });
+      phone
+    })
 
     if (!customer) {
-      return res.status(404).json({ message: "Хэрэглэгч олдсонгүй" });
+      return res.status(404).json({ message: 'Хэрэглэгч олдсонгүй' })
     }
 
     res.status(200).json({
-      message: "Хэрэглэгчийн мэдээлэл",
-      customer,
-    });
+      message: 'Хэрэглэгчийн мэдээлэл',
+      customer
+    })
   } catch (err) {
-    console.error("Get customer by phone error:", err);
-    res.status(500).json({ message: "Server алдаа", error: err.message });
+    console.error('Get customer by phone error:', err)
+    res.status(500).json({ message: 'Server алдаа', error: err.message })
   }
-};
+}
 
 // Захиалга үүсгэх - ГҮЙЦЭД ШИНЭЧИЛСЭН
 export const createOrder = async (req, res) => {
   try {
-    const { customerId, items, usedBonus = 0, paymentMethod, notes } = req.body;
-    const employeeId = req.user.id;
-    const organizationId = req.organizationId;
+    const { customerId, items, usedBonus = 0, paymentMethod, notes } = req.body
+    const employeeId = req.user.id
+    const organizationId = req.organizationId
 
     // 1️⃣ Items шалгах
     if (!items || items.length === 0) {
-      return res.status(400).json({ message: "Items хоосон байна" });
+      return res.status(400).json({ message: 'Items хоосон байна' })
     }
 
     const toTwoDecimal = (value) => {
-      return Number(value.toFixed(2));
-    };
+      return Number(value.toFixed(2))
+    }
 
     // 2️⃣ Items total
-    const itemsTotal = toTwoDecimal(
-      items.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0),
-    );
+    const itemsTotal = toTwoDecimal(items.reduce((sum, i) => sum + i.price * (i.quantity || 1), 0))
 
-    let customer = null;
-    let earnedBonus = 0;
-    let finalTotal = itemsTotal;
+    let customer = null
+    let earnedBonus = 0
+    let finalTotal = itemsTotal
 
     // 3️⃣ Хэрвээ customer байгаа бол
     if (customerId) {
       // *** Зөвхөн тухайн газрын үйлчлүүлэгч эсэхийг шалгах ***
       customer = await Customer.findOne({
         _id: customerId,
-        organizationId,
-      });
+        organizationId
+      })
 
       if (!customer) {
         return res.status(404).json({
-          message: "Customer олдсонгүй эсвэл хандах эрхгүй",
-        });
+          message: 'Customer олдсонгүй эсвэл хандах эрхгүй'
+        })
       }
 
       // Bonus ашигласан эсэх
       if (usedBonus > 0) {
         if (usedBonus > customer.total_bonus) {
           return res.status(400).json({
-            message: "Bonus хүрэлцэхгүй байна",
-            availableBonus: customer.total_bonus,
-          });
+            message: 'Bonus хүрэлцэхгүй байна',
+            availableBonus: customer.total_bonus
+          })
         }
-        finalTotal = toTwoDecimal(finalTotal - usedBonus);
+        finalTotal = toTwoDecimal(finalTotal - usedBonus)
       }
 
       // Хэрвээ тэг болвол 1 болго (минимум төлбөр)
-      if (finalTotal < 0) finalTotal = 0;
+      if (finalTotal < 0) finalTotal = 0
 
       // 4️⃣ Бонус бодох (байгууллагын тохиргооноос)
-      const bonusPercentage = req.organization.bonusPercentage || 0.05;
-      earnedBonus = toTwoDecimal(finalTotal * bonusPercentage);
+      const bonusPercentage = req.organization.bonusPercentage || 0.05
+      earnedBonus = toTwoDecimal(finalTotal * bonusPercentage)
     }
 
     // 5️⃣ Захиалгын дугаар үүсгэх (atomic — race condition-оос хамгаалсан)
-    const prefix = req.organization.orderPrefix || "ORD";
-    const counter = await Counter.findOneAndUpdate(
-      { _id: `orderNumber:${organizationId}` },
-      { $inc: { seq: 1 } },
-      { new: true, upsert: true }
-    );
-    const orderNumber = `${prefix}-${counter.seq.toString().padStart(4, "0")}`;
-
+    const prefix = req.organization.orderPrefix || 'ORD'
+    const counter = await Counter.findOneAndUpdate({ _id: `orderNumber:${organizationId}` }, { $inc: { seq: 1 } }, { new: true, upsert: true })
+    const orderNumber = `${prefix}-${counter.seq.toString().padStart(4, '0')}`
 
     // 6️⃣ Order үүсгэх
     const order = await Order.create({
@@ -200,43 +190,41 @@ export const createOrder = async (req, res) => {
       total_price: toTwoDecimal(finalTotal),
       used_bonus: toTwoDecimal(usedBonus),
       earned_bonus: toTwoDecimal(earnedBonus),
-      paymentMethod: paymentMethod || "cash",
-      notes: notes || null,
-    });
+      paymentMethod: paymentMethod || 'cash',
+      notes: notes || null
+    })
 
     // 7️⃣ Customer bonus update (хэрвээ байгаа бол)
     if (customer) {
-      customer.total_bonus = toTwoDecimal(
-        customer.total_bonus - usedBonus + earnedBonus,
-      );
-      customer.lastVisit = new Date();
-      await customer.save();
+      customer.total_bonus = toTwoDecimal(customer.total_bonus - usedBonus + earnedBonus)
+      customer.lastVisit = new Date()
+      await customer.save()
     }
 
     // Populate employee мэдээлэл
-    await order.populate("employee_id", "username name");
+    await order.populate('employee_id', 'username name')
 
     res.status(201).json({
-      message: "Захиалга амжилттай бүртгэгдлээ",
+      message: 'Захиалга амжилттай бүртгэгдлээ',
       order,
       updatedCustomer: customer || null,
-      printReceipt: req.organization.settings?.printReceipts ?? false,
-    });
+      printReceipt: req.organization.settings?.printReceipts ?? false
+    })
   } catch (err) {
-    console.error("Create order error:", err);
-    res.status(500).json({ message: "Server алдаа", error: err.message });
+    console.error('Create order error:', err)
+    res.status(500).json({ message: 'Server алдаа', error: err.message })
   }
-};
+}
 
 // Сарын орлогын график
 export const getMonthlyIncomeChart = async (req, res) => {
   try {
-    const organizationId = req.organizationId;
+    const organizationId = req.organizationId
 
-    const start = new Date();
-    start.setMonth(start.getMonth() - 11);
-    start.setDate(1);
-    start.setHours(0, 0, 0, 0);
+    const start = new Date()
+    start.setMonth(start.getMonth() - 11)
+    start.setDate(1)
+    start.setHours(0, 0, 0, 0)
 
     // *** Зөвхөн тухайн газрын захиалгуудаас тооцох ***
     const result = await Order.aggregate([
@@ -244,65 +232,63 @@ export const getMonthlyIncomeChart = async (req, res) => {
         $match: {
           organizationId: new mongoose.Types.ObjectId(organizationId),
           createdAt: { $gte: start },
-          status: { $in: ["PAID"] }, // Зөвхөн төлөгдсөн
-          isDeleted: { $ne: true },
-        },
+          status: { $in: ['PAID'] }, // Зөвхөн төлөгдсөн
+          isDeleted: { $ne: true }
+        }
       },
       {
         $group: {
           _id: {
-            year: { $year: "$createdAt" },
-            month: { $month: "$createdAt" },
+            year: { $year: '$createdAt' },
+            month: { $month: '$createdAt' }
           },
-          totalIncome: { $sum: "$total_price" },
-          orderCount: { $sum: 1 },
-        },
+          totalIncome: { $sum: '$total_price' },
+          orderCount: { $sum: 1 }
+        }
       },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
-    ]);
+      { $sort: { '_id.year': 1, '_id.month': 1 } }
+    ])
 
     // 12 сарын array бэлдэх
-    const months = [];
+    const months = []
     for (let i = 0; i < 12; i++) {
-      const d = new Date();
-      d.setMonth(d.getMonth() - (11 - i));
+      const d = new Date()
+      d.setMonth(d.getMonth() - (11 - i))
       months.push({
         year: d.getFullYear(),
         month: d.getMonth() + 1,
-        label: `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, "0")}`,
+        label: `${d.getFullYear()}/${(d.getMonth() + 1).toString().padStart(2, '0')}`,
         total: 0,
-        orderCount: 0,
-      });
+        orderCount: 0
+      })
     }
 
     result.forEach((r) => {
-      const index = months.findIndex(
-        (m) => m.year === r._id.year && m.month === r._id.month,
-      );
+      const index = months.findIndex((m) => m.year === r._id.year && m.month === r._id.month)
       if (index !== -1) {
-        months[index].total = r.totalIncome;
-        months[index].orderCount = r.orderCount;
+        months[index].total = r.totalIncome
+        months[index].orderCount = r.orderCount
       }
-    });
+    })
 
-    res.json(months);
+    res.json(months)
   } catch (err) {
-    console.error("Get monthly income error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get monthly income error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Сүүлийн 7 хоногийн орлого
 export const getLast7DaysIncome = async (req, res) => {
   try {
-    const organizationId = req.organizationId;
+    const organizationId = req.organizationId
 
-    const today = new Date();
-    today.setHours(23, 59, 59, 999);
+    const today = new Date()
+    today.setHours(23, 59, 59, 999)
 
-    const start = new Date();
-    start.setDate(start.getDate() - 6);
-    start.setHours(0, 0, 0, 0);
+    const start = new Date()
+    start.setDate(start.getDate() - 6)
+    start.setHours(0, 0, 0, 0)
 
     // *** Зөвхөн тухайн газрын захиалгууд ***
     const result = await Order.aggregate([
@@ -311,75 +297,75 @@ export const getLast7DaysIncome = async (req, res) => {
           organizationId: new mongoose.Types.ObjectId(organizationId),
           createdAt: {
             $gte: start,
-            $lte: today,
+            $lte: today
           },
-          status: { $in: ["PAID"] },
-          isDeleted: { $ne: true },
-        },
+          status: { $in: ['PAID'] },
+          isDeleted: { $ne: true }
+        }
       },
       {
         $group: {
           _id: {
             day: {
               $dateToString: {
-                format: "%Y-%m-%d",
-                date: "$createdAt",
-              },
-            },
+                format: '%Y-%m-%d',
+                date: '$createdAt'
+              }
+            }
           },
-          totalIncome: { $sum: "$total_price" },
-          orderCount: { $sum: 1 },
-        },
+          totalIncome: { $sum: '$total_price' },
+          orderCount: { $sum: 1 }
+        }
       },
-      { $sort: { "_id.day": 1 } },
-    ]);
+      { $sort: { '_id.day': 1 } }
+    ])
 
     // 7 хоногийн массив
-    const days = [];
+    const days = []
     for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const key = d.toISOString().slice(0, 10);
+      const d = new Date()
+      d.setDate(d.getDate() - i)
+      const key = d.toISOString().slice(0, 10)
       days.push({
         label: `${d.getMonth() + 1}/${d.getDate()}`,
         key,
         total: 0,
-        orderCount: 0,
-      });
+        orderCount: 0
+      })
     }
 
     result.forEach((r) => {
-      const day = days.find((d) => d.key === r._id.day);
+      const day = days.find((d) => d.key === r._id.day)
       if (day) {
-        day.total = r.totalIncome;
-        day.orderCount = r.orderCount;
+        day.total = r.totalIncome
+        day.orderCount = r.orderCount
       }
-    });
+    })
 
-    res.json(days);
+    res.json(days)
   } catch (err) {
-    console.error("Get 7 days income error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get 7 days income error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Огнооны хүрээгээр орлого
 export const getIncomeByDateRange = async (req, res) => {
   try {
-    const { from, to } = req.query;
-    const organizationId = req.organizationId;
+    const { from, to } = req.query
+    const organizationId = req.organizationId
 
     if (!from || !to) {
       return res.status(400).json({
-        message: "from болон to date шаардлагатай",
-      });
+        message: 'from болон to date шаардлагатай'
+      })
     }
 
-    const start = new Date(from);
-    start.setHours(0, 0, 0, 0);
+    const start = new Date(from)
+    start.setHours(0, 0, 0, 0)
 
-    const end = new Date(to);
-    end.setHours(23, 59, 59, 999);
+    const end = new Date(to)
+    end.setHours(23, 59, 59, 999)
 
     // *** Зөвхөн тухайн газрын захиалгууд ***
     const result = await Order.aggregate([
@@ -388,325 +374,303 @@ export const getIncomeByDateRange = async (req, res) => {
           organizationId: new mongoose.Types.ObjectId(organizationId),
           createdAt: {
             $gte: start,
-            $lte: end,
+            $lte: end
           },
-          status: { $in: ["PAID"] },
-          isDeleted: { $ne: true },
-        },
+          status: { $in: ['PAID'] },
+          isDeleted: { $ne: true }
+        }
       },
       {
         $group: {
           _id: {
             day: {
               $dateToString: {
-                format: "%Y-%m-%d",
-                date: "$createdAt",
-              },
-            },
+                format: '%Y-%m-%d',
+                date: '$createdAt'
+              }
+            }
           },
-          totalIncome: { $sum: "$total_price" },
-          orderCount: { $sum: 1 },
-        },
+          totalIncome: { $sum: '$total_price' },
+          orderCount: { $sum: 1 }
+        }
       },
-      { $sort: { "_id.day": 1 } },
-    ]);
+      { $sort: { '_id.day': 1 } }
+    ])
 
     // Range-ийн бүх өдрийг бэлдэх
-    const days = [];
-    const cursor = new Date(start);
+    const days = []
+    const cursor = new Date(start)
 
     while (cursor <= end) {
-      const key = cursor.toISOString().slice(0, 10);
+      const key = cursor.toISOString().slice(0, 10)
       days.push({
         key,
         label: `${cursor.getMonth() + 1}/${cursor.getDate()}`,
         total: 0,
-        orderCount: 0,
-      });
-      cursor.setDate(cursor.getDate() + 1);
+        orderCount: 0
+      })
+      cursor.setDate(cursor.getDate() + 1)
     }
 
     result.forEach((r) => {
-      const day = days.find((d) => d.key === r._id.day);
+      const day = days.find((d) => d.key === r._id.day)
       if (day) {
-        day.total = r.totalIncome;
-        day.orderCount = r.orderCount;
+        day.total = r.totalIncome
+        day.orderCount = r.orderCount
       }
-    });
+    })
 
-    res.json(days);
+    res.json(days)
   } catch (err) {
-    console.error("Get date range income error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get date range income error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Үйлчлүүлэгчийн захиалгын түүх
 export const getCustomerOrderHistory = async (req, res) => {
   try {
-    const { customerId } = req.params;
-    const organizationId = req.organizationId;
+    const { customerId } = req.params
+    const organizationId = req.organizationId
 
     if (!customerId) {
-      return res.status(400).json({ message: "customerId шаардлагатай" });
+      return res.status(400).json({ message: 'customerId шаардлагатай' })
     }
 
     // *** Customer тухайн газрынх эсэхийг шалгах ***
     const customer = await Customer.findOne({
       _id: customerId,
-      organizationId,
-    });
+      organizationId
+    })
 
     if (!customer) {
       return res.status(404).json({
-        message: "Customer олдсонгүй эсвэл хандах эрхгүй",
-      });
+        message: 'Customer олдсонгүй эсвэл хандах эрхгүй'
+      })
     }
 
     const orders = await Order.find({
       organizationId,
       customer_id: customerId,
-      status: { $in: ["PAID"] },
-      isDeleted: { $ne: true },
+      status: { $in: ['PAID'] },
+      isDeleted: { $ne: true }
     })
       .sort({ createdAt: -1 })
-      .populate("employee_id", "username name")
-      .select(
-        "orderNumber items total_price used_bonus earned_bonus createdAt paymentMethod",
-      );
+      .populate('employee_id', 'username name')
+      .select('orderNumber items total_price used_bonus earned_bonus createdAt paymentMethod')
 
     res.json({
       customer,
       totalOrders: orders.length,
-      orders,
-    });
+      orders
+    })
   } catch (err) {
-    console.error("Get customer order history error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get customer order history error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Захиалгын жагсаалт
 export const getOrderList = async (req, res) => {
   try {
-    const {
-      status,
-      customer_id,
-      employee_id,
-      minPrice,
-      maxPrice,
-      page = 1,
-      limit = 50,
-      startDate,
-      endDate,
-    } = req.query;
+    const { status, customer_id, employee_id, minPrice, maxPrice, page = 1, limit = 50, startDate, endDate } = req.query
 
-    const organizationId = req.organizationId;
+    const organizationId = req.organizationId
 
     // *** Заавал тухайн байгууллагын захиалгууд ***
-    const filter = { organizationId, isDeleted: { $ne: true } };
+    const filter = { organizationId, isDeleted: { $ne: true } }
 
-    if (status) filter.status = status;
-    if (customer_id) filter.customer_id = customer_id;
-    if (employee_id) filter.employee_id = employee_id;
+    if (status) filter.status = status
+    if (customer_id) filter.customer_id = customer_id
+    if (employee_id) filter.employee_id = employee_id
 
     if (minPrice || maxPrice) {
-      filter.total_price = {};
-      if (minPrice) filter.total_price.$gte = Number(minPrice);
-      if (maxPrice) filter.total_price.$lte = Number(maxPrice);
+      filter.total_price = {}
+      if (minPrice) filter.total_price.$gte = Number(minPrice)
+      if (maxPrice) filter.total_price.$lte = Number(maxPrice)
     }
 
     if (startDate || endDate) {
-      filter.createdAt = {};
+      filter.createdAt = {}
       if (startDate) {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        filter.createdAt.$gte = start;
+        const start = new Date(startDate)
+        start.setHours(0, 0, 0, 0)
+        filter.createdAt.$gte = start
       }
       if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        filter.createdAt.$lte = end;
+        const end = new Date(endDate)
+        end.setHours(23, 59, 59, 999)
+        filter.createdAt.$lte = end
       }
     }
 
-    const skip = (parseInt(page) - 1) * parseInt(limit);
+    const skip = (parseInt(page, 10) - 1) * parseInt(limit, 10)
 
     const [orders, total] = await Promise.all([
-      Order.find(filter)
-        .populate("customer_id", "name phone")
-        .populate("employee_id", "username name")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(parseInt(limit)),
-      Order.countDocuments(filter),
-    ]);
+      Order.find(filter).populate('customer_id', 'name phone').populate('employee_id', 'username name').sort({ createdAt: -1 }).skip(skip).limit(parseInt(limit, 10)),
+      Order.countDocuments(filter)
+    ])
 
     res.status(200).json({
       orders,
       pagination: {
-        currentPage: parseInt(page),
-        totalPages: Math.ceil(total / parseInt(limit)),
+        currentPage: parseInt(page, 10),
+        totalPages: Math.ceil(total / parseInt(limit, 10)),
         totalOrders: total,
-        limit: parseInt(limit),
-      },
-    });
+        limit: parseInt(limit, 10)
+      }
+    })
   } catch (err) {
-    console.error("Get order list error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get order list error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Захиалга устгах
 export const deleteOrder = async (req, res) => {
   try {
-    const { orderId } = req.body;
-    const organizationId = req.organizationId;
+    const { orderId } = req.body
+    const organizationId = req.organizationId
 
     if (!orderId) {
-      return res.status(400).json({ message: "orderId шаардлагатай" });
+      return res.status(400).json({ message: 'orderId шаардлагатай' })
     }
 
     // *** Зөвхөн өөрийн газрын захиалгыг устгаж болно ***
     const order = await Order.findOne({
       _id: orderId,
-      organizationId,
-    });
+      organizationId
+    })
 
     if (!order) {
       return res.status(404).json({
-        message: "Захиалга олдсонгүй эсвэл хандах эрхгүй",
-      });
+        message: 'Захиалга олдсонгүй эсвэл хандах эрхгүй'
+      })
     }
 
     // Хэрвээ бонус ашигласан бол буцааж өгөх
     if (order.customer_id && (order.used_bonus > 0 || order.earned_bonus > 0)) {
-      const customer = await Customer.findById(order.customer_id);
+      const customer = await Customer.findById(order.customer_id)
       if (customer) {
-        customer.total_bonus += order.used_bonus - order.earned_bonus;
-        await customer.save();
+        customer.total_bonus += order.used_bonus - order.earned_bonus
+        await customer.save()
       }
     }
 
-    await Order.findByIdAndUpdate(orderId, { isDeleted: true });
+    await Order.findByIdAndUpdate(orderId, { isDeleted: true })
 
     res.status(200).json({
-      message: "Захиалга амжилттай устгагдлаа",
-    });
+      message: 'Захиалга амжилттай устгагдлаа'
+    })
   } catch (err) {
-    console.error("Delete order error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Delete order error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Customer мэдээлэл шинэчлэх
 export const updateCustomer = async (req, res) => {
   try {
-    const { customerId, ...updateData } = req.body;
-    const organizationId = req.organizationId;
+    const { customerId, ...updateData } = req.body
+    const organizationId = req.organizationId
 
     if (!customerId) {
-      return res.status(400).json({ message: "customerId шаардлагатай" });
+      return res.status(400).json({ message: 'customerId шаардлагатай' })
     }
 
     // *** Зөвхөн өөрийн газрын үйлчлүүлэгчийг засаж болно ***
-    const updatedCustomer = await Customer.findOneAndUpdate(
-      { _id: customerId, organizationId },
-      updateData,
-      { new: true },
-    );
+    const updatedCustomer = await Customer.findOneAndUpdate({ _id: customerId, organizationId }, updateData, { new: true })
 
     if (!updatedCustomer) {
       return res.status(404).json({
-        message: "Хэрэглэгч олдсонгүй эсвэл хандах эрхгүй",
-      });
+        message: 'Хэрэглэгч олдсонгүй эсвэл хандах эрхгүй'
+      })
     }
 
     res.json({
-      message: "Хэрэглэгчийн мэдээлэл шинэчлэгдлээ",
-      customer: updatedCustomer,
-    });
+      message: 'Хэрэглэгчийн мэдээлэл шинэчлэгдлээ',
+      customer: updatedCustomer
+    })
   } catch (err) {
-    console.error("Update customer error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Update customer error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}
 
 // Статистик
 export const getStatistics = async (req, res) => {
   try {
-    const organizationId = req.organizationId;
-    const { period = "today" } = req.query; // today, week, month, year
+    const organizationId = req.organizationId
+    const { period = 'today' } = req.query // today, week, month, year
 
-    let startDate = new Date();
+    const startDate = new Date()
 
     switch (period) {
-      case "today":
-        startDate.setHours(0, 0, 0, 0);
-        break;
-      case "week":
-        startDate.setDate(startDate.getDate() - 7);
-        break;
-      case "month":
-        startDate.setMonth(startDate.getMonth() - 1);
-        break;
-      case "year":
-        startDate.setFullYear(startDate.getFullYear() - 1);
-        break;
+      case 'today':
+        startDate.setHours(0, 0, 0, 0)
+        break
+      case 'week':
+        startDate.setDate(startDate.getDate() - 7)
+        break
+      case 'month':
+        startDate.setMonth(startDate.getMonth() - 1)
+        break
+      case 'year':
+        startDate.setFullYear(startDate.getFullYear() - 1)
+        break
     }
 
-    const [totalRevenue, orderCount, customerCount, avgOrderValue] =
-      await Promise.all([
-        Order.aggregate([
-          {
-            $match: {
-              organizationId: new mongoose.Types.ObjectId(organizationId),
-              status: "PAID",
-              createdAt: { $gte: startDate },
-              isDeleted: { $ne: true },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              total: { $sum: "$total_price" },
-            },
-          },
-        ]),
-        Order.countDocuments({
-          organizationId,
-          status: "PAID",
-          createdAt: { $gte: startDate },
-          isDeleted: { $ne: true },
-        }),
-        Customer.countDocuments({ organizationId }),
-        Order.aggregate([
-          {
-            $match: {
-              organizationId: new mongoose.Types.ObjectId(organizationId),
-              status: "PAID",
-              createdAt: { $gte: startDate },
-              isDeleted: { $ne: true },
-            },
-          },
-          {
-            $group: {
-              _id: null,
-              avgValue: { $avg: "$total_price" },
-            },
-          },
-        ]),
-      ]);
+    const [totalRevenue, orderCount, customerCount, avgOrderValue] = await Promise.all([
+      Order.aggregate([
+        {
+          $match: {
+            organizationId: new mongoose.Types.ObjectId(organizationId),
+            status: 'PAID',
+            createdAt: { $gte: startDate },
+            isDeleted: { $ne: true }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$total_price' }
+          }
+        }
+      ]),
+      Order.countDocuments({
+        organizationId,
+        status: 'PAID',
+        createdAt: { $gte: startDate },
+        isDeleted: { $ne: true }
+      }),
+      Customer.countDocuments({ organizationId }),
+      Order.aggregate([
+        {
+          $match: {
+            organizationId: new mongoose.Types.ObjectId(organizationId),
+            status: 'PAID',
+            createdAt: { $gte: startDate },
+            isDeleted: { $ne: true }
+          }
+        },
+        {
+          $group: {
+            _id: null,
+            avgValue: { $avg: '$total_price' }
+          }
+        }
+      ])
+    ])
 
     res.json({
       period,
       totalRevenue: totalRevenue[0]?.total || 0,
       orderCount,
       customerCount,
-      avgOrderValue: avgOrderValue[0]?.avgValue || 0,
-    });
+      avgOrderValue: avgOrderValue[0]?.avgValue || 0
+    })
   } catch (err) {
-    console.error("Get statistics error:", err);
-    res.status(500).json({ message: err.message });
+    console.error('Get statistics error:', err)
+    res.status(500).json({ message: err.message })
   }
-};
+}

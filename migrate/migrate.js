@@ -1,45 +1,34 @@
 // migrate.js
 // Хуучин DB-с шинэ DB руу customers болон orders collection зөөнө
-import mongoose from "mongoose";
-import oldCustomerSchema from "./oldCustomer.model.js";
-import newCustomerSchema from "./newCustomer.model.js";
-import oldOrderSchema from "./oldOrder.model.js";
-import newOrderSchema from "./newOrder.model.js";
+import mongoose from 'mongoose'
 
-const ORGANIZATION_ID = new mongoose.Types.ObjectId("69ff332b85802abf1e74ee64");
+import newCustomerSchema from './newCustomer.model.js'
+import newOrderSchema from './newOrder.model.js'
+import oldCustomerSchema from './oldCustomer.model.js'
+import oldOrderSchema from './oldOrder.model.js'
+
+const ORGANIZATION_ID = new mongoose.Types.ObjectId('69ff332b85802abf1e74ee64')
 
 async function migrate() {
-  const oldConn = await mongoose
-    .createConnection(
-      `mongodb+srv://rentsendorjbatmunkh1_db_user:Ree%400814@laundrydb.sjcstnd.mongodb.net/?appName=laundryDb`,
-    )
-    .asPromise();
-  console.log(`✅ Connected to OLD db: laundryDb`);
+  const oldConn = await mongoose.createConnection(`mongodb+srv://rentsendorjbatmunkh1_db_user:Ree%400814@laundrydb.sjcstnd.mongodb.net/?appName=laundryDb`).asPromise()
+  console.log(`✅ Connected to OLD db: laundryDb`)
 
-  const newConn = await mongoose
-    .createConnection(
-      `mongodb+srv://rentsendorjbatmunkh1_db_user:Ree%400814@cluster.8zd4s1k.mongodb.net/prod?appName=Cluster`,
-    )
-    .asPromise();
-  console.log(`✅ Connected to NEW db: prod`);
+  const newConn = await mongoose.createConnection(`mongodb+srv://rentsendorjbatmunkh1_db_user:Ree%400814@cluster.8zd4s1k.mongodb.net/prod?appName=Cluster`).asPromise()
+  console.log(`✅ Connected to NEW db: prod`)
 
-  const OldCustomer = oldConn.model(
-    "OldCustomer",
-    oldCustomerSchema,
-    "customers",
-  );
-  const NewCustomer = newConn.model("Customer", newCustomerSchema, "customers");
+  const OldCustomer = oldConn.model('OldCustomer', oldCustomerSchema, 'customers')
+  const NewCustomer = newConn.model('Customer', newCustomerSchema, 'customers')
 
-  const customers = await OldCustomer.find().lean();
+  const customers = await OldCustomer.find().lean()
 
-  let inserted = 0;
-  let skipped = 0;
+  let inserted = 0
+  let skipped = 0
 
   for (const c of customers) {
-    const exists = await NewCustomer.findOne({ phone: c.phone });
+    const exists = await NewCustomer.findOne({ phone: c.phone })
     if (exists) {
-      skipped++;
-      continue;
+      skipped++
+      continue
     }
 
     await NewCustomer.create({
@@ -53,36 +42,36 @@ async function migrate() {
       lastVisit: c.updatedAt,
       isActive: true,
       organizationId: ORGANIZATION_ID,
-      notes: "Migrated from laundryDb",
+      notes: 'Migrated from laundryDb',
       createdAt: c.createdAt,
-      updatedAt: c.updatedAt,
-    });
+      updatedAt: c.updatedAt
+    })
 
-    inserted++;
+    inserted++
   }
 
-  console.log(`✅ Customers — Inserted: ${inserted}, Skipped: ${skipped}`);
+  console.log(`✅ Customers — Inserted: ${inserted}, Skipped: ${skipped}`)
 
   // ── Orders migration ──────────────────────────────────────────
-  const OldOrder = oldConn.model("OldOrder", oldOrderSchema, "orders");
-  const NewOrder = newConn.model("Order", newOrderSchema, "orders");
+  const OldOrder = oldConn.model('OldOrder', oldOrderSchema, 'orders')
+  const NewOrder = newConn.model('Order', newOrderSchema, 'orders')
 
-  const orders = await OldOrder.find().lean();
-  console.log(`Found ${orders.length} orders`);
+  const orders = await OldOrder.find().lean()
+  console.log(`Found ${orders.length} orders`)
 
-  let oInserted = 0;
-  let oSkipped = 0;
-  let counter = 1;
+  let oInserted = 0
+  let oSkipped = 0
+  let counter = 1
 
   for (const o of orders) {
-    const exists = await NewOrder.findOne({ _id: o._id });
+    const exists = await NewOrder.findOne({ _id: o._id })
     if (exists) {
-      oSkipped++;
-      counter++;
-      continue;
+      oSkipped++
+      counter++
+      continue
     }
 
-    const orderNumber = `MIG-${String(counter).padStart(4, "0")}`;
+    const orderNumber = `MIG-${String(counter).padStart(4, '0')}`
 
     await NewOrder.create({
       _id: o._id,
@@ -95,28 +84,28 @@ async function migrate() {
         name: item.name,
         price: item.price,
         quantity: 1,
-        parentId: item.parentId,
+        parentId: item.parentId
       })),
       total_price: o.total_price,
       used_bonus: o.used_bonus ?? 0,
       earned_bonus: o.earned_bonus ?? 0,
-      status: o.status ?? "PAID",
+      status: o.status ?? 'PAID',
       createdAt: o.createdAt,
-      updatedAt: o.updatedAt,
-    });
+      updatedAt: o.updatedAt
+    })
 
-    oInserted++;
-    counter++;
+    oInserted++
+    counter++
   }
 
-  console.log(`✅ Orders — Inserted: ${oInserted}, Skipped: ${oSkipped}`);
+  console.log(`✅ Orders — Inserted: ${oInserted}, Skipped: ${oSkipped}`)
 
-  await oldConn.close();
-  await newConn.close();
-  process.exit(0);
+  await oldConn.close()
+  await newConn.close()
+  process.exit(0)
 }
 
 migrate().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+  console.error(err)
+  process.exit(1)
+})

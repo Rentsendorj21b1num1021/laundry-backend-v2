@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const oldOrderSchema = new mongoose.Schema(
   {
@@ -9,15 +9,15 @@ const oldOrderSchema = new mongoose.Schema(
         id: String,
         name: String,
         price: Number,
-        parentId: String,
-      },
+        parentId: String
+      }
     ],
     total_price: Number,
     used_bonus: { type: Number, default: 0 },
     earned_bonus: { type: Number, default: 0 },
-    status: String,
+    status: String
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
-export default oldOrderSchema;
+export default oldOrderSchema

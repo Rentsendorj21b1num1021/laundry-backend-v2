@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const userSchema = new mongoose.Schema(
   {
@@ -10,8 +10,8 @@ const userSchema = new mongoose.Schema(
     // Үндсэн роль (системийн хэмжээнд)
     role: {
       type: String,
-      enum: ["super_admin", "owner", "manager", "employee"],
-      default: "employee",
+      enum: ['super_admin', 'owner', 'manager', 'employee'],
+      default: 'employee'
     },
 
     // Олон байгууллагад ажиллах боломж
@@ -19,15 +19,15 @@ const userSchema = new mongoose.Schema(
       {
         organizationId: {
           type: mongoose.Schema.Types.ObjectId,
-          ref: "Organization",
-          required: true,
+          ref: 'Organization',
+          required: true
         },
 
         // Тухайн газар дахь роль
         role: {
           type: String,
-          enum: ["owner", "manager", "employee"],
-          default: "employee",
+          enum: ['owner', 'manager', 'employee'],
+          default: 'employee'
         },
 
         // Нэмэлт эрхүүд (хэрэв шаардлагатай бол)
@@ -37,36 +37,36 @@ const userSchema = new mongoose.Schema(
         joinedAt: { type: Date, default: Date.now },
 
         // Идэвхитэй эсэх
-        isActive: { type: Boolean, default: true },
-      },
+        isActive: { type: Boolean, default: true }
+      }
     ],
 
     // Анхдагч байгууллага (нэвтрэх үед автоматаар сонгогдоно)
     defaultOrganization: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Organization",
+      ref: 'Organization'
     },
 
-    avatarUrl: { type: String, default: "" },
+    avatarUrl: { type: String, default: '' },
 
     // Сүүлд нэвтэрсэн
     lastLoginAt: { type: Date },
 
     // Идэвхитэй эсэх
-    isActive: { type: Boolean, default: true },
+    isActive: { type: Boolean, default: true }
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
 // JSON буцаахдаа passwordHash-г арилгах
-userSchema.set("toJSON", {
-  transform: (doc, ret) => {
-    delete ret.passwordHash;
-    return ret;
-  },
-});
+userSchema.set('toJSON', {
+  transform: (_doc, ret) => {
+    delete ret.passwordHash
+    return ret
+  }
+})
 
 // Index
-userSchema.index({ "organizations.organizationId": 1 });
+userSchema.index({ 'organizations.organizationId': 1 })
 
-export default mongoose.model("User", userSchema);
+export default mongoose.model('User', userSchema)

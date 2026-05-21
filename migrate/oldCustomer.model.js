@@ -1,13 +1,13 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose'
 
 const oldCustomerSchema = new mongoose.Schema(
   {
     phone: String,
     name: String,
     total_bonus: Number,
-    createdBy: mongoose.Schema.Types.ObjectId,
+    createdBy: mongoose.Schema.Types.ObjectId
   },
-  { timestamps: true },
-);
+  { timestamps: true }
+)
 
-export default oldCustomerSchema; // ⬅️ ЗӨВ
+export default oldCustomerSchema // ⬅️ ЗӨВ
