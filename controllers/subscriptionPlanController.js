@@ -79,9 +79,7 @@ export const assignSubscriptionPlan = async (req, res) => {
       return res.status(404).json({ message: 'Багц олдсонгүй' })
     }
 
-    const organization = await Organization.findByIdAndUpdate(organizationId, { subscriptionPlanId, subscriptionStartedAt: new Date() }, { new: true }).populate(
-      'subscriptionPlanId'
-    )
+    const organization = await Organization.findByIdAndUpdate(organizationId, { subscriptionPlanId, subscriptionStartedAt: new Date() }, { new: true }).populate('subscriptionPlanId')
 
     if (!organization) {
       return res.status(404).json({ message: 'Байгууллага олдсонгүй' })

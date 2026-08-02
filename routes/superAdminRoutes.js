@@ -1,5 +1,6 @@
 import express from 'express'
 
+import { archiveSubscriptionPlan, assignSubscriptionPlan, createSubscriptionPlan, getOrganizationBill, getSubscriptionPlans } from '../controllers/subscriptionPlanController.js'
 import {
   activateOrganization,
   changeUserRole,
@@ -13,13 +14,6 @@ import {
   getSystemStats,
   toggleUserStatus
 } from '../controllers/superAdminController.js'
-import {
-  archiveSubscriptionPlan,
-  assignSubscriptionPlan,
-  createSubscriptionPlan,
-  getOrganizationBill,
-  getSubscriptionPlans
-} from '../controllers/subscriptionPlanController.js'
 import { auth, superAdminOnly } from '../middleware/authMiddleware.js'
 
 const router = express.Router()

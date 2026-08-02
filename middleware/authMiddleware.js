@@ -90,7 +90,7 @@ export const requireOrganization = async (req, res, next) => {
 
     const organization = await Organization.findById(orgId)
 
-    if (!organization || organization.status !== 'active') {
+    if (organization.status !== 'active') {
       return res.status(403).json({
         message: 'Байгууллага идэвхигүй эсвэл олдсонгүй'
       })
