@@ -1,0 +1,15 @@
+meta {
+  name: archive
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/api/admin/subscription-plans/PLAN_ID_HERE/archive
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

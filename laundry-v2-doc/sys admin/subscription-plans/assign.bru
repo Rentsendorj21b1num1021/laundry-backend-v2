@@ -1,0 +1,21 @@
+meta {
+  name: assign
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/api/admin/organizations/{{organizationId}}/subscription
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "subscriptionPlanId": "PLAN_ID_HERE"
+  }
+}

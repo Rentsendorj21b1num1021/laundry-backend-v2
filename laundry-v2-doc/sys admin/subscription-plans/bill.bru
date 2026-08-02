@@ -1,0 +1,19 @@
+meta {
+  name: bill
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/api/admin/organizations/{{organizationId}}/bill
+  body: none
+  auth: bearer
+}
+
+params:query {
+  month:
+}
+
+auth:bearer {
+  token: {{token}}
+}
