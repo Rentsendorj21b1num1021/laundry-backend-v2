@@ -52,14 +52,13 @@ const organizationSchema = new mongoose.Schema(
       required: true
     },
 
-    // Subscription мэдээлэл (хэрэв төлбөртэй болговол)
-    subscriptionPlan: {
-      type: String,
-      enum: ['free', 'basic', 'premium'],
-      default: 'free'
+    // Тухайн байгууллагад хэрэгжиж буй тулбурын нөхцөл (SubscriptionPlan)
+    subscriptionPlanId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'SubscriptionPlan'
     },
 
-    subscriptionExpiry: { type: Date },
+    subscriptionStartedAt: { type: Date },
 
     // Тохиргоо
     settings: {

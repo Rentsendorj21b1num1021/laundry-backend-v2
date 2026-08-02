@@ -13,6 +13,13 @@ import {
   getSystemStats,
   toggleUserStatus
 } from '../controllers/superAdminController.js'
+import {
+  archiveSubscriptionPlan,
+  assignSubscriptionPlan,
+  createSubscriptionPlan,
+  getOrganizationBill,
+  getSubscriptionPlans
+} from '../controllers/subscriptionPlanController.js'
 import { auth, superAdminOnly } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
@@ -35,5 +42,12 @@ router.post('/admin/users/super-admin', auth, superAdminOnly, createSuperAdmin)
 // Statistics
 router.get('/admin/stats/system', auth, superAdminOnly, getSystemStats)
 router.get('/admin/stats/organizations-revenue', auth, superAdminOnly, getOrganizationsRevenue)
+
+// Subscription plans
+router.post('/admin/subscription-plans', auth, superAdminOnly, createSubscriptionPlan)
+router.get('/admin/subscription-plans', auth, superAdminOnly, getSubscriptionPlans)
+router.patch('/admin/subscription-plans/:planId/archive', auth, superAdminOnly, archiveSubscriptionPlan)
+router.put('/admin/organizations/:organizationId/subscription', auth, superAdminOnly, assignSubscriptionPlan)
+router.get('/admin/organizations/:organizationId/bill', auth, superAdminOnly, getOrganizationBill)
 
 export default router
