@@ -33,7 +33,7 @@ export async function getMenus(req, res) {
     const menus = await Menu.find({
       organizationId,
       isActive: true
-    })
+    }).sort({ createdAt: -1 })
 
     res.json(menus)
   } catch (err) {
