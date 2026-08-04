@@ -1,0 +1,36 @@
+meta {
+  name: create
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/bo-api/user/create
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "username": "username",
+    "password": "password",
+    "phone": "phone",
+    "email":"email",
+    "role":"employee" //'super_admin', 'owner', 'manager', 'employee'
+  //   "organizations": {
+      
+  //   },
+  //   "defaultOrganization":"defaultOrganization",
+  //   "avatarUrl":"avatarUrl"
+  }
+}
+
+script:post-response {
+  {
+   
+  }
+}
