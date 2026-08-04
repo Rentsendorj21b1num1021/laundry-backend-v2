@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { login } from '@/controllers/bo-api/auth/authController'
+import { login } from '../../../controllers/bo-api/auth/authController.js'
 
 const router = express.Router()
 

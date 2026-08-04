@@ -5,9 +5,8 @@ import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 
-import boApiRoutes from '@/routes/bo-api/index.js'
-
 import authRoutes from './routes/authRoutes.js'
+import boApiRoutes from './routes/bo-api/index.js'
 import customerRoutes from './routes/customerRoutes.js'
 import menuRoutes from './routes/menuRoutes.js'
 import organizationRoutes from './routes/organizationRoutes.js'
