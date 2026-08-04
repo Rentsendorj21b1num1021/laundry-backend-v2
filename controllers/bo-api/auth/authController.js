@@ -52,15 +52,18 @@ export const login = async (req, res) => {
 
     // *** САЙЖРУУЛСАН ХАРИУ - organizations мэдээлэл оруулах ***
     res.json({
+      success: true,
       message: 'Амжилттай нэвтэрлээ',
-      token,
-      user: {
-        _id: user._id,
-        username: user.username,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
-        avatarUrl: user.avatarUrl
+      data: {
+        token,
+        user: {
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          avatarUrl: user.avatarUrl
+        }
       }
     })
   } catch (err) {
