@@ -5,6 +5,8 @@ import dotenv from 'dotenv'
 import express from 'express'
 import mongoose from 'mongoose'
 
+import boApiRoutes from '@/routes/bo-api/index.js'
+
 import authRoutes from './routes/authRoutes.js'
 import customerRoutes from './routes/customerRoutes.js'
 import menuRoutes from './routes/menuRoutes.js'
@@ -25,6 +27,7 @@ app.use('/api', customerRoutes)
 app.use('/api', menuRoutes)
 app.use('/api', organizationRoutes)
 app.use('/api', superAdminRoutes) // *** ШИНЭ ***
+app.use('/bo-api', boApiRoutes)
 
 app.get('/health', (_req, res) => {
   res.json({ status: 'OK, Who are you', timestamp: new Date() })
