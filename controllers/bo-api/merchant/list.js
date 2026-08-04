@@ -1,6 +1,6 @@
 import Merchant from '../../../models/organization.js'
 
-export const getMerchants = async (req, res) => {
+const handler = async (req, res) => {
   try {
     const { page, limit } = req.body
     const query = {}
@@ -26,3 +26,5 @@ export const getMerchants = async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message })
   }
 }
+
+export default handler

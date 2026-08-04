@@ -5,15 +5,24 @@ meta {
 }
 
 post {
-  url: {{baseUrl}}/bo-api/auth/login
+  url: {{baseUrl}}/bo-api/merchant/create
   body: json
-  auth: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
 }
 
 body:json {
   {
-    "identifier": "rentsendorjbatmunkh1@gmail.com",
-    "password": "Ree@0814"
+    "name": "Цэлмэг угаалга",
+    "businessType": "laundry",
+    "address": "БЗД, 26-р хороо, Энхтайваны өргөн чөлөө",
+    "phone": "99112233",
+    "email": "info@tselmeg-laundry.mn",
+    "orderPrefix": "TS",
+    "ownerId": "6a70817856df2e7c855635ea"
   }
 }
 
