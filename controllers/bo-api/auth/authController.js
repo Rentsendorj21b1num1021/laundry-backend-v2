@@ -26,7 +26,7 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: 'Хэрэглэгч идэвхигүй байна' })
     }
 
-    if (user.role !== 'superadmin') {
+    if (user.role !== 'super_admin') {
       return res.status(400).json({ message: 'Нэвтрэх боломжгүй хэрэглэгч байна.' })
     }
 

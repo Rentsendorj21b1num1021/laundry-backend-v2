@@ -1,19 +1,19 @@
 meta {
-  name: login
+  name: list
   type: http
   seq: 1
 }
 
 post {
-  url: {{baseUrl}}/api/auth/login
+  url: {{baseUrl}}/bo-api/merchant/list
   body: json
   auth: none
 }
 
 body:json {
   {
-    "identifier": "rentsendorjbatmunkh1@gmail.com",
-    "password": "Ree@0814"
+    "page": 1,
+    "limit": 10
   }
 }
 
