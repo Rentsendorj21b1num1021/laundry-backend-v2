@@ -1,8 +1,7 @@
 import { z } from 'zod'
 
-import validationSchema from '../../../src/core/validations/merchant/create.js'
-
 import Merchant from '../../../models/organization.js'
+import validationSchema from '../../../src/core/validations/merchant/create.js'
 
 const handler = async (req, res) => {
   try {
