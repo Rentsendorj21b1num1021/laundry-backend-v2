@@ -23,7 +23,7 @@ const handler = async (req, res) => {
         total: userCount,
         limit: limit,
         page: page,
-        pages: Math.ceil(merchantCount / limit)
+        pages: Math.ceil(userCount / limit)
       }
     })
   } catch (err) {
