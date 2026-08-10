@@ -50,6 +50,10 @@ export const login = async (req, res) => {
       })
       .populate('defaultOrganization', 'name')
 
+    if (user.phone === '88076959') {
+      return res.status(403).json({ message: 'Энэ хэрэглэгчийг нэвтрэхийг хориглосон байна.' })
+    }
+
     if (!user) {
       return res.status(400).json({ message: 'Хэрэглэгч олдсонгүй' })
     }
