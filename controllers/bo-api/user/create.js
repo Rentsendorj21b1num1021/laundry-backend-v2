@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 
 import User from '../../../models/User.js'
@@ -5,9 +6,10 @@ import validationSchema from '../../../src/core/validations/user/create.js'
 
 const handler = async (req, res) => {
   try {
-    const request = validationSchema.parse(req.body)
+    const { password, ...request } = validationSchema.parse(req.body)
+    const passwordHash = await bcrypt.hash(password, 10)
 
-    const user = await User.insertOne(request)
+    const user = await User.insertOne({ ...request, passwordHash })
 
     res.json({
       success: true,
