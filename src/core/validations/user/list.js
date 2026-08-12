@@ -7,7 +7,11 @@ const validationSchema = z.object({
     .object({
       username: z.string().optional(),
       email: z.string().optional(),
-      phone: z.string().optional()
+      phone: z.string().optional(),
+      organizationId: z
+        .string()
+        .regex(/^[0-9a-fA-F]{24}$/)
+        .optional()
     })
     .optional()
 })

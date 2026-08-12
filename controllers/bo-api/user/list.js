@@ -6,8 +6,15 @@ const handler = async (req, res) => {
     const { page, limit, filter } = validationSchema.parse(req.body)
 
     const query = {}
-    if (filter) {
-      query.$or = [{ username: { $regex: filter, $options: 'i' } }, { email: { $regex: filter, $options: 'i' } }, { phone: { $regex: filter, $options: 'i' } }]
+    if (filter?.username || filter?.email || filter?.phone) {
+      query.$or = [
+        filter.username ? { username: { $regex: filter.username, $options: 'i' } } : null,
+        filter.email ? { email: { $regex: filter.email, $options: 'i' } } : null,
+        filter.phone ? { phone: { $regex: filter.phone, $options: 'i' } } : null
+      ].filter(Boolean)
+    }
+    if (filter?.organizationId) {
+      query['organizations.organizationId'] = filter.organizationId
     }
 
     const userCount = await User.countDocuments(query)
