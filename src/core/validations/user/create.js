@@ -3,7 +3,7 @@ import { z } from 'zod'
 const validationSchema = z.object({
   username: z.string().min(3).max(30),
   password: z.string().min(6).max(100),
-  phone: z.string().regex(/^\+?\d{10,15}$/),
+  phone: z.string().regex(/^\+?\d{8,15}$/),
   email: z.string().email(),
   role: z.enum(['super_admin', 'owner', 'manager', 'employee']).optional(),
   organizations: z
