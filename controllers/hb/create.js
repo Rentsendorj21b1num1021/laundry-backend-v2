@@ -1,4 +1,4 @@
-import hb from '../../models/hb'
+import hb from '../../models/hb.js'
 
 // 1️⃣ Customer бүртгэх
 export const createHb = async (req, res) => {

@@ -1,9 +1,9 @@
 import express from 'express'
 
-import createHandler from '../../controllers/hb/create'
+import { createHb } from '../../controllers/hb/create.js'
 
 const router = express.Router()
 
-router.post('/hb', createHandler)
+router.post('/hb', createHb)
 
 export default router
