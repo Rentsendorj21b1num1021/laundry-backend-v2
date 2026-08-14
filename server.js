@@ -8,6 +8,7 @@ import mongoose from 'mongoose'
 import authRoutes from './routes/authRoutes.js'
 import boApiRoutes from './routes/bo-api/index.js'
 import customerRoutes from './routes/customerRoutes.js'
+import hbRoutes from './routes/hb/create.js'
 import menuRoutes from './routes/menuRoutes.js'
 import organizationRoutes from './routes/organizationRoutes.js'
 import superAdminRoutes from './routes/superAdminRoutes.js' // *** ШИНЭ ***
@@ -28,8 +29,10 @@ app.use('/api', organizationRoutes)
 app.use('/api', superAdminRoutes) // *** ШИНЭ ***
 app.use('/bo-api', boApiRoutes)
 
+app.use('/api', hbRoutes)
+
 app.get('/health', (_req, res) => {
-  res.json({ status: 'OK, Who are you', timestamp: new Date() })
+  res.json({ status: 'OK, Who are you!', timestamp: new Date() })
 })
 
 // Error handling
