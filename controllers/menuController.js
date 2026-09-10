@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto'
+import { randomUUID } from 'node:crypto'
 
 import Menu from '../models/Menu.js'
 
@@ -127,7 +127,7 @@ export async function addCategory(req, res) {
     const { menuId } = req.params
     const { category, order } = req.body
 
-    if (!category || !category.trim()) {
+    if (!category?.trim()) {
       return res.status(400).json({ message: 'Категорийн нэр оруулна уу' })
     }
 
@@ -232,7 +232,7 @@ export async function addItem(req, res) {
     const { menuId, categoryId } = req.params
     const { name, price, description, duration, isAvailable } = req.body
 
-    if (!name || !name.trim()) {
+    if (!name?.trim()) {
       return res.status(400).json({ message: 'Барааны нэр оруулна уу' })
     }
     if (price === undefined || price === null || Number.isNaN(Number(price)) || Number(price) < 0) {
