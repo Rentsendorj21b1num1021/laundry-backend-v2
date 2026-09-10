@@ -1,18 +1,6 @@
 import express from 'express'
 
-import {
-  addCategory,
-  addItem,
-  createMenu,
-  deleteCategory,
-  deleteItem,
-  deleteMenu,
-  getMenuByService,
-  getMenus,
-  updateCategory,
-  updateItem,
-  updateMenu
-} from '../controllers/menuController.js'
+import { addCategory, addItem, createMenu, deleteCategory, deleteItem, deleteMenu, getMenuByService, getMenus, updateCategory, updateItem, updateMenu } from '../controllers/menuController.js'
 import { auth, requireOrganization, requireOrgRole } from '../middleware/authMiddleware.js'
 
 const router = express.Router()
