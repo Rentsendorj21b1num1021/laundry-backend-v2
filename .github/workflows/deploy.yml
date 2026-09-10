@@ -72,10 +72,12 @@ jobs:
           script: |
             set -e
             docker image prune -af
+            docker container prune -f
             docker pull ${{ secrets.DOCKER_USERNAME }}/laundry:latest
             docker stop laundry || true
             docker rm laundry || true
             docker run -d --name laundry --restart always -p 4000:4000 \
+              --log-opt max-size=10m --log-opt max-file=3 \
               -e JWT_SECRET="${{ secrets.JWT_SECRET }}" \
               -e MONGO_URL="${{ secrets.MONGO_URL }}" \
               ${{ secrets.DOCKER_USERNAME }}/laundry:latest
