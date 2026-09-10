@@ -1,0 +1,27 @@
+meta {
+  name: update-item
+  type: http
+  seq: 9
+}
+
+put {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/items/ITEM_ID_HERE
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Цамц (урт ханцуй)",
+    "price": 6500,
+    "isAvailable": false
+  }
+}
+
+docs {
+  Only send the fields you want to change — the rest of the item is left untouched.
+}

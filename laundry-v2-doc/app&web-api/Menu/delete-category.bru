@@ -1,0 +1,18 @@
+meta {
+  name: delete-category
+  type: http
+  seq: 7
+}
+
+delete {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/categories/CATEGORY_ID_HERE
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+docs {
+  Deletes the category and all items inside it.
+}

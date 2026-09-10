@@ -1,0 +1,22 @@
+meta {
+  name: update-category
+  type: http
+  seq: 6
+}
+
+put {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/categories/CATEGORY_ID_HERE
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "category": "Хатаах, Индүүдэх",
+    "order": 2
+  }
+}

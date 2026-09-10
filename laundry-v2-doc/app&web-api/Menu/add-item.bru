@@ -1,0 +1,25 @@
+meta {
+  name: add-item
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/categories/CATEGORY_ID_HERE/items
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "Цамц",
+    "price": 6000,
+    "description": "Урт ханцуйтай цамц",
+    "duration": 60,
+    "isAvailable": true
+  }
+}

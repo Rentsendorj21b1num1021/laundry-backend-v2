@@ -16,11 +16,26 @@ auth:bearer {
 
 body:json {
   {
-    "items": [
+    "isActive": true,
+    "categories": [
       {
-        "name": "Цамц",
-        "price": 6000
+        "id": "cat1",
+        "category": "Хувцас угаалт",
+        "items": [
+          {
+            "id": "item1",
+            "name": "Цамц",
+            "price": 6000,
+            "parentId": "cat1"
+          }
+        ]
       }
     ]
   }
+}
+
+docs {
+  Only `service`, `categories`, `isActive` fields are accepted — this replaces the whole
+  categories/items tree, so prefer the granular category/item endpoints for a single
+  add/edit/delete operation.
 }

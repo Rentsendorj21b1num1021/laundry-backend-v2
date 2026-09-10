@@ -5,11 +5,19 @@ meta {
 }
 
 get {
-  url: {{baseUrl}}/api/menus
+  url: {{baseUrl}}/api/menus?includeInactive=false
   body: none
   auth: bearer
 }
 
+params:query {
+  includeInactive: false
+}
+
 auth:bearer {
   token: {{token}}
+}
+
+docs {
+  Set includeInactive=true to also see deactivated menus (needed to find and reactivate them).
 }

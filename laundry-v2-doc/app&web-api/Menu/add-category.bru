@@ -1,0 +1,22 @@
+meta {
+  name: add-category
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "category": "Хатаах",
+    "order": 1
+  }
+}

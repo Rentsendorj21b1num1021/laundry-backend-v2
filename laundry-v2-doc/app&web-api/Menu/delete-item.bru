@@ -1,0 +1,14 @@
+meta {
+  name: delete-item
+  type: http
+  seq: 10
+}
+
+delete {
+  url: {{baseUrl}}/api/menus/MENU_ID_HERE/items/ITEM_ID_HERE
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
