@@ -63,7 +63,7 @@ const orderSchema = new mongoose.Schema(
     // Төлбөрийн мэдээлэл
     paymentMethod: {
       type: String,
-      enum: ['cash', 'card', 'qpay', 'monpay', 'hipay', 'bonus' , 'transfer']
+      enum: ['cash', 'card', 'qpay', 'monpay', 'hipay', 'bonus', 'transfer']
     },
 
     // Төлсөн дүн
