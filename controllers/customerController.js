@@ -557,7 +557,11 @@ export const deleteOrder = async (req, res) => {
       }
     }
 
-    await Order.findByIdAndUpdate(orderId, { isDeleted: true })
+    await Order.findByIdAndUpdate(orderId, {
+      isDeleted: true,
+      isDeletedAt: new Date(),
+      history: [...order.history, { action: 'DELETED', by: req.user.id, at: new Date() }]
+    })
 
     res.status(200).json({
       message: 'Захиалга амжилттай устгагдлаа'

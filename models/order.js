@@ -75,7 +75,19 @@ const orderSchema = new mongoose.Schema(
     // Тэмдэглэл
     notes: { type: String },
 
-    isDeleted: { type: Boolean, default: false }
+    isDeleted: { type: Boolean, default: false },
+
+    isDeletedAt: { type: Date, default: null },
+    history: [
+      {
+        action: { type: String }, // 'created', 'status_changed', 'deleted' гэх мэт
+        from: { type: String },
+        to: { type: String },
+        by: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        at: { type: Date, default: Date.now },
+        note: { type: String }
+      }
+    ]
   },
   { timestamps: true }
 )
