@@ -1,0 +1,40 @@
+# Render Blueprint — https://render.com/docs/blueprint-spec
+# Render dashboard → New → Blueprint → энэ repo-г сонгоход доорх сервисийг үүсгэнэ.
+services:
+  - name: laundry-core-service
+    type: web
+    runtime: node
+    plan: free
+    # laundry-core-service болон MongoDB Atlas-тай ижил region
+    region: singapore
+    branch: main
+    # GitHub Actions-ийн CI (lint, test, build) амжилттай болсны дараа л deploy хийнэ.
+    autoDeployTrigger: checksPass
+    # NODE_ENV=production үед `npm ci` devDependency суулгахгүй тул --include=dev шаардлагатай.
+    buildCommand: npm ci --include=dev && npm run build
+    # Free багцад pre-deploy command байхгүй тул migration-ийг эхлэх үед ажиллуулна (давтан ажиллахад асуудалгүй).
+    startCommand: npm run migrate-up && npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render нэг удаа санамсаргүй үүсгэнэ — backoffice-ийнхээс автоматаар өөр байна.
+      - key: JWT_SECRET
+        generateValue: true
+      # Backoffice-тэй нэг DB (хэрэглэгчдийг backoffice-оос удирдана)
+      - key: MONGO_DB
+        value: laundry
+      - key: TRUST_PROXY_HOPS
+        value: "1"
+      - key: TERMS_VERSION
+        value: "2026-10-01"
+      # SMS нийлүүлэгч холбогдох хүртэл OTP хүсэлт production-д алдаа буцаана (зориуд).
+      - key: SMS_PROVIDER
+        value: console
+      # Нууц утгууд: Blueprint үүсгэх үед Render асууна, git-д хадгалахгүй.
+      # MONGO_URL: laundry-bo-service-ийнхтэй ижил prod connection string
+      - key: MONGO_URL
+        sync: false
+      # Жишээ: "+97699000000:123456" — SMS-гүйгээр туршиж, App Store шалгагчид өгөх тест дугаар
+      - key: OTP_TEST_PHONES
+        sync: false
