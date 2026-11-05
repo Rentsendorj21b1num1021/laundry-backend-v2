@@ -26,6 +26,5 @@ build/
 .DS_Store
 Thumbs.db
 
-# Lock files (optional, usually want to keep package-lock.json for reproducibility)
-package-lock.json
+# Lock files — package-lock.json-ийг commit хийнэ (CI болон Render дээр `npm ci` шаарддаг)
 yarn.lock
